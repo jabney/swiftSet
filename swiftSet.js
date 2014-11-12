@@ -216,7 +216,7 @@ function Histogram(values, key) {
     for (key in hist) {
       hist[key].count = count;
     }
-    _max = count || 1;
+    _max = count;
     return this;
   };
 
