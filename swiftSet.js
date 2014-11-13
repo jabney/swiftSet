@@ -2,24 +2,24 @@
 (function(swiftSet, undefined) { 
 'use strict';
 
-// ***************************************************************
-// Histogram and Set - the Histogram is the backing object for
+// ---------------------------------------------------------------
+// Set and Histogram - the Histogram is the backing object for
 // Set, but it can also be used to record frequencies of discrete
-// values in arrays, and by extension strings; the Set object,
+// values in arrays, strings, and objects; the Set object,
 // which is based upon Histogram, stores unique values and can
 // process even large arrays of values very fast. 
-// ***************************************************************
+// ---------------------------------------------------------------
 
-// ***************************************************************
+// ---------------------------------------------------------------
 // Helpers and Shortcuts
-// ***************************************************************
+// ---------------------------------------------------------------
 
 var slice = Array.prototype.slice,
 toString = Object.prototype.toString,
 
-// ***************************************************************
+// ---------------------------------------------------------------
 // Encode types for key generation.
-// ***************************************************************
+// ---------------------------------------------------------------
 
 // Return the type of built-in objects via toString.
 typeOf = (function() {
@@ -76,286 +76,7 @@ function isWrapped(obj) {
   return obj instanceof Wrapper;
 }
 
-// ***************************************************************
-// Histogram - a discrete histogram designed as a backing object
-// for the Set constructor, but it can be used to record frequencies
-// of arrays of values, characters in a string, or just about anything.
-//
-// Example usage: 
-// 
-// var str = "We hold these truths to be self-evident, that all men \
-// are created equal, that they are endowed by their Creator with \
-// certain unalienable Rights, that among these are Life, Liberty \
-// and the pursuit of Happiness.";
-// str = str.replace(/[.,]/g, '');
-
-// var vc = [],
-// hist = new Histogram(str.toLowerCase().split(''))
-//   .each(function(value, count) {
-//     vc.push(value, count);
-//   });
-
-// console.log(vc);
-// // ["w", 3, "e", 28, " ", 34, "h", 13, "o", 6, "l", 9, "d", 6, ...]
-
-// vc = [];
-// hist = new Histogram(str.toLowerCase().split(' '))
-//   .each(function(value, count) {
-//     vc.push(value, count);
-//   });
-
-// console.log(vc);
-// // [..., "these", 2, "truths", 1, "to", 1, "be", 1, "self-evident", 1,
-// // "that", 3, "all", 1, "men", 1, "are", 3, "created", 1, "equal", 1, ...]
-// ***************************************************************
-
-function Histogram(values, key) {
-  var hist = Object.create(null), _length = 0, _max = 0,
-  // Generates a uid function depending on whether key is specified
-  // and whether it's a function or value.
-  uid = (function() {
-    return typeof key === 'undefined' ?
-      // If key is not defined in the constructor, look for a property 
-      // on the object named 'key' and use it as a value or function.
-      // This fallback is necessary so that objects can be mixed with
-      // other values in the histogram.
-      function(obj) {
-        var key = obj.key, type = typeof key;
-        return type === 'undefined' ? obj : 
-          type === 'function' ? key.call(obj) : key;
-      } :
-      // If key is specified in the constructor, use it as a value
-      // or a function depending on its type. In this instance,
-      // all values in the histogram must be objects with this
-      // property present.
-      typeof key === 'function' ?
-        function(obj) { return key.call(obj); } :
-        function(obj) { return obj[key]; }
-  })();
-
-  // Initialize histogram with given values.
-  values && values.forEach(function(value) {
-    add(value);
-  });
-
-  // Add a single value to the histogram. If count is specified,
-  // set the value's count; this facilitates the merge operation.
-  function add(value, count) {
-    var key = uid(value),
-    count = typeof count === 'undefined' ? 1 : count;
-    // If the entry already exists, update the count.
-    if (hist[key]) {
-      hist[key].count += count;
-    // Otherwise create a new entry and update the length.
-    } else {
-      hist[key] = { value: value, count: count };
-      _length++;
-    }
-    _max = Math.max(_max, hist[key].count);
-    return this;
-  }
-
-  // Remove a single value from the histogram.
-  function remove(value) {
-    var key = uid(value);
-    if (hist[key]) {
-      delete hist[key];
-      _length--;
-    }
-    return this;
-  }
-
-  // Get a copy of the internal histogram object.
-  function get() {
-    var h = Object.create(null);
-    for (var key in hist) {
-      h[key] = Object.create(null);
-      h[key].value = hist[key].value;
-      h[key].count = hist[key].count;
-    }
-    return h;
-  }
-
-  // Add multiple values to the histogram via an array of values.
-  this.addValues = function(values) {
-    values.forEach(function(value) {
-      add(value);
-    });
-    return this;
-  };
-
-  // Remove multiple values from the histogram via an array of values.
-  this.removeValues = function(values) {
-    values.forEach(function(value) {
-      remove(value);
-    });
-    return this;
-  };
-
-  // Add one or more values to the histogram.
-  this.add = function() {
-    this.addValues(slice.call(arguments, 0));
-    return this;
-  };
-
-  // Remove one or more values from the histogram.
-  this.remove = function() {
-    this.removeValues(slice.call(arguments, 0));
-    return this;
-  };
-
-  // Returns a copy of this histogram.
-  this.copy = function() {
-    return new Histogram(null, key).merge(this);
-  };
-
-  // By default, sets all the histogram's counts to 1. If count 
-  // is specified, sets all the histogram's counts to the given count.
-  this.normalize = function(count) {
-    var key, count = typeof count === 'undefined' ? 1 : count;
-    for (key in hist) {
-      hist[key].count = count;
-    }
-    _max = count;
-    return this;
-  };
-
-  // Iterate through each of the histogram's entries. If action
-  // returns a truthy value, the loop terminates.
-  this.each = function(action, context) {
-    for (var key in hist) {
-      if (action.call(
-        context, hist[key].value, hist[key].count, key
-     )) break;
-    }
-    return this;
-  };
-
-  // Returns true if the specified value exists in the histogram.
-  this.has = function(value) {
-    var key = uid(value);
-    return hist[key] === undefined ? false : true;
-  };
-
-  // Returns the number of entries in the histogram.
-  this.size = function() {
-    return _length;
-  };
-
-  // Returns the maximum count of values in the histogram.
-  this.max = function() {
-    return _max;
-  };
-
-  // Returns the count corresponding to the given value.
-  this.count = function(value) {
-    var key = uid(value);
-    return hist[key] === undefined ? 0 : hist[key].count;
-  };
-
-  // Merges the given histogram into this one.
-  this.merge = function(h) {
-    h.each(function(value, count) {
-      add(value, count);
-    }, this);
-    return this;
-  };
-}
-
-// Helpers
-Histogram.wrapObj = wrapObj;
-Histogram.isWrapped = isWrapped;
-
-Histogram.prototype = {
-
-  // Returns an array of the histogram's values.
-  values: function() {
-    return this.map(function(value) {
-      return value;
-    });
-  },
-
-  // Returns an array of the histogram's counts.
-  counts: function() {
-    return this.map(function(value, count) {
-      return count;
-    });
-  },
-
-  // Returns an array of the histogram's keys.
-  keys: function() {
-    return this.map(function(value, count, key) {
-      return key;
-    });
-  },
-
-  // Returns an array of values, but unwraps any wrapped objects.
-  unwrap: function() {
-    return this.map(function(value) {
-      return isWrapped(value) ? value.value : value;
-    });
-  },
-
-  // Returns the minimum count in the histogram.
-  min: function() {
-    return Math.min.apply(null, this.counts());
-  },
-
-  // Returns the sum of all entry's counts.
-  total: function() {
-    return this.reduce(function(prev, curr) {
-      return prev + curr;
-    }, 0);
-  },
-
-  // Returns the average value of counts in the histogram.
-  average: function() {
-    return this.total() / this.size();
-  },
-
-  // Determine if another histogram is equivalent to this one.
-  equals: function(histogram) {
-    return this.keyify() === histogram.keyify();
-  },
-
-  // Returns an array of user-transformed entries.
-  map: function(action, context) {
-    var out = [];
-    this.each(function(value, count, key) {
-      out.push(action.call(this, value, count, key));
-    }, context);
-    return out;
-  },
-
-  // Reduces all counts in the histogram to a single value.
-  reduce: function(action, initial) {
-    return this.counts().reduce(function(prev, curr) {
-      return action(prev, curr);
-    }, initial);
-  },
-
-  // Encodes key/type/count triplets for each element in the histogram.
-  // Histograms can be considered equivalent if their keys are equal.
-  keyify: function() {
-    var uid = [], typeCode;
-    this.each(function(value, count, key) {
-      uid.push(key + ':' + count + ',');
-    });
-    return '{' + uid.sort().join('').slice(0, -1) + '}';
-  },
-
-  // Conversion of this histogram to a representative string.
-  toString: function() {
-    return this.keyify();
-  },
-
-  constructor: Histogram
-};
-
-// Export
-swiftSet.Histogram = Histogram;
-
-// ***************************************************************
+// ---------------------------------------------------------------
 // Set - produces a set of unique values from an array (or another
 // set) that can be queried for its properties. It supports four
 // common set operations (union, intersection, difference,
@@ -388,7 +109,7 @@ swiftSet.Histogram = Histogram;
 // {id: 56, toString: function() { return this.id; }}
 // {uid: 59}
 // {id: f9de, uid: funciton() { return this.id; }}
-// ***************************************************************
+// ---------------------------------------------------------------
 
 function Set(a, key) {
   var hist = new Histogram(a, key), vals = hist.values();
@@ -400,6 +121,7 @@ function Set(a, key) {
     out = [],
     a = new Histogram(vals, key), 
     b = new Histogram(values, key).normalize(2);
+    // Merge the histograms and evaluate their contents.
     a.merge(b);
     if(evaluator) {
       a.each(function(value, count) {
@@ -631,6 +353,284 @@ Set.equals = function(a, b) {
 // Export
 swiftSet.Set = Set;
 
-})(window.swiftSet = window.swiftSet || {});
+// ---------------------------------------------------------------
+// Histogram - a discrete histogram designed as a backing object
+// for the Set constructor, but it can be used to record frequencies
+// of arrays of values, characters in a string, or just about anything.
+//
+// Example usage: 
+// 
+// var str = "We hold these truths to be self-evident, that all men \
+// are created equal, that they are endowed by their Creator with \
+// certain unalienable Rights, that among these are Life, Liberty \
+// and the pursuit of Happiness.";
+// str = str.replace(/[.,]/g, '');
 
+// var vc = [],
+// hist = new Histogram(str.toLowerCase().split(''))
+//   .each(function(value, count) {
+//     vc.push(value, count);
+//   });
+
+// console.log(vc);
+// // ["w", 3, "e", 28, " ", 34, "h", 13, "o", 6, "l", 9, "d", 6, ...]
+
+// vc = [];
+// hist = new Histogram(str.toLowerCase().split(' '))
+//   .each(function(value, count) {
+//     vc.push(value, count);
+//   });
+
+// console.log(vc);
+// // [..., "these", 2, "truths", 1, "to", 1, "be", 1, "self-evident", 1,
+// // "that", 3, "all", 1, "men", 1, "are", 3, "created", 1, "equal", 1, ...]
+// ---------------------------------------------------------------
+
+function Histogram(values, key) {
+  var hist = Object.create(null), _length = 0, _max = 0,
+  // Generates a uid function depending on whether key is specified
+  // and whether it's a function or value.
+  uid = (function() {
+    return typeof key === 'undefined' ?
+      // If key is not defined in the constructor, look for a property 
+      // on the object named 'key' and use it as a value or function.
+      // This fallback is necessary so that objects can be mixed with
+      // other values in the histogram.
+      function(obj) {
+        var key = obj.key, type = typeof key;
+        return type === 'undefined' ? obj : 
+          type === 'function' ? key.call(obj) : key;
+      } :
+      // If key is specified in the constructor, use it as a value
+      // or a function depending on its type. In this instance,
+      // all values in the histogram must be objects with this
+      // property present.
+      typeof key === 'function' ?
+        function(obj) { return key.call(obj); } :
+        function(obj) { return obj[key]; }
+  })();
+
+  // Initialize histogram with given values.
+  values && values.forEach(function(value) {
+    add(value);
+  });
+
+  // Add a single value to the histogram. If count is specified,
+  // set the value's count; this facilitates the merge operation.
+  function add(value, count) {
+    var key = uid(value),
+    count = typeof count === 'undefined' ? 1 : count;
+    // If the entry already exists, update the count.
+    if (hist[key]) {
+      hist[key].count += count;
+    // Otherwise create a new entry and update the length.
+    } else {
+      hist[key] = { value: value, count: count };
+      _length++;
+    }
+    _max = Math.max(_max, hist[key].count);
+    return this;
+  }
+
+  // Remove a single value from the histogram.
+  function remove(value) {
+    var key = uid(value);
+    if (hist[key]) {
+      delete hist[key];
+      _length--;
+    }
+    return this;
+  }
+
+  // Get a copy of the internal histogram object.
+  function get() {
+    var h = Object.create(null);
+    for (var key in hist) {
+      h[key] = Object.create(null);
+      h[key].value = hist[key].value;
+      h[key].count = hist[key].count;
+    }
+    return h;
+  }
+
+  // Add multiple values to the histogram via an array of values.
+  this.addValues = function(values) {
+    values.forEach(function(value) {
+      add(value);
+    });
+    return this;
+  };
+
+  // Remove multiple values from the histogram via an array of values.
+  this.removeValues = function(values) {
+    values.forEach(function(value) {
+      remove(value);
+    });
+    return this;
+  };
+
+  // Add one or more values to the histogram.
+  this.add = function() {
+    this.addValues(slice.call(arguments, 0));
+    return this;
+  };
+
+  // Remove one or more values from the histogram.
+  this.remove = function() {
+    this.removeValues(slice.call(arguments, 0));
+    return this;
+  };
+
+  // Returns a copy of this histogram.
+  this.copy = function() {
+    return new Histogram(null, key).merge(this);
+  };
+
+  // By default, sets all the histogram's counts to 1. If count 
+  // is specified, sets all the histogram's counts to the given count.
+  this.normalize = function(count) {
+    var key, count = typeof count === 'undefined' ? 1 : count;
+    for (key in hist) {
+      hist[key].count = count;
+    }
+    _max = count;
+    return this;
+  };
+
+  // Iterate through each of the histogram's entries. If action
+  // returns a truthy value, the loop terminates.
+  this.each = function(action, context) {
+    for (var key in hist) {
+      if (action.call(
+        context, hist[key].value, hist[key].count, key
+     )) break;
+    }
+    return this;
+  };
+
+  // Returns true if the specified value exists in the histogram.
+  this.has = function(value) {
+    var key = uid(value);
+    return hist[key] === undefined ? false : true;
+  };
+
+  // Returns the number of entries in the histogram.
+  this.size = function() {
+    return _length;
+  };
+
+  // Returns the maximum count of values in the histogram.
+  this.max = function() {
+    return _max;
+  };
+
+  // Returns the count corresponding to the given value.
+  this.count = function(value) {
+    var key = uid(value);
+    return hist[key] === undefined ? 0 : hist[key].count;
+  };
+
+  // Merges the given histogram into this one.
+  this.merge = function(h) {
+    h.each(function(value, count) {
+      add(value, count);
+    });
+    return this;
+  };
+}
+
+// Helpers
+Histogram.wrapObj = wrapObj;
+Histogram.isWrapped = isWrapped;
+
+Histogram.prototype = {
+
+  // Returns an array of the histogram's values.
+  values: function() {
+    return this.map(function(value) {
+      return value;
+    });
+  },
+
+  // Returns an array of the histogram's counts.
+  counts: function() {
+    return this.map(function(value, count) {
+      return count;
+    });
+  },
+
+  // Returns an array of the histogram's keys.
+  keys: function() {
+    return this.map(function(value, count, key) {
+      return key;
+    });
+  },
+
+  // Returns an array of values, but unwraps any wrapped objects.
+  unwrap: function() {
+    return this.map(function(value) {
+      return isWrapped(value) ? value.value : value;
+    });
+  },
+
+  // Returns the minimum count in the histogram.
+  min: function() {
+    return Math.min.apply(null, this.counts());
+  },
+
+  // Returns the sum of each entry's counts.
+  total: function() {
+    return this.reduce(function(prev, curr) {
+      return prev + curr;
+    }, 0);
+  },
+
+  // Returns the average value of counts in the histogram.
+  average: function() {
+    return this.total() / this.size();
+  },
+
+  // Determine if another histogram is equivalent to this one.
+  equals: function(histogram) {
+    return this.keyify() === histogram.keyify();
+  },
+
+  // Returns an array of user-transformed entries.
+  map: function(action, context) {
+    var out = [];
+    this.each(function(value, count, key) {
+      out.push(action.call(this, value, count, key));
+    }, context);
+    return out;
+  },
+
+  // Reduces all counts in the histogram to a single value.
+  reduce: function(action, initial) {
+    return this.counts().reduce(function(prev, curr) {
+      return action(prev, curr);
+    }, initial);
+  },
+
+  // Encodes key/type/count triplets for each element in the histogram.
+  // Histograms can be considered equivalent if their keys are equal.
+  keyify: function() {
+    var uid = [], typeCode;
+    this.each(function(value, count, key) {
+      uid.push(key + ':' + count + ',');
+    });
+    return '{' + uid.sort().join('').slice(0, -1) + '}';
+  },
+
+  // Conversion of this histogram to a representative string.
+  toString: function() {
+    return this.keyify();
+  },
+
+  constructor: Histogram
+};
+
+// Export
+swiftSet.Histogram = Histogram;
+
+})(window.swiftSet = window.swiftSet || {});
 
