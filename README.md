@@ -47,7 +47,7 @@ set.remove('a', 'b'); // ('c', 'd', 'e')
 set.addItems(['a', 'b']); // ('a', 'b', 'c', 'd', 'e')
 
 // Remove items from the set via an array.
-set.addItems(['d', 'e']); // ('a', 'b', 'c')
+set.removeItems(['d', 'e']); // ('a', 'b', 'c')
 
 // Get the number of items in the set.
 set.size(); // => 3
