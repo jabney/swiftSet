@@ -31,7 +31,52 @@ set = new Set([1, 2, 2, 3, 3, 3]); // (1, 2, 3)
 ### More
 
 ```javascript
+// Import Set
+var Set = swiftSet.Set,
 
-var Set = swiftSet.Set;
+// Create a new set.
+set = new Set(['a', 'b', 'c']); // ('a', 'b', 'c')
 
-One issue with mixing and matching numeric and string values is that the numeric value `1` and the string `"1"` both evaluate to `"1"` when used as a key in an object literal, which is used in the underlying histogram. swiftSet gets around this limitation by providing functionality to give numeric values and numeric strings (or any type for that matter) a wrapper object which returns a unique key according to the type of value.
+// Add items to the set.
+set.add('d', 'e'); // ('a', 'b', 'c', 'd', 'e')
+
+// Remove items from the set.
+set.remove('a', 'b'); // ('c', 'd', 'e')
+
+// Add items to the set via an array.
+set.addValues(['a', 'b']); // ('a', 'b', 'c', 'd', 'e')
+
+// Remove items from the set via an array.
+set.removeValues(['d', 'e']); // ('a', 'b', 'c')
+
+// Get the number of items in the set.
+set.size(); // => 3
+
+// Determine if the set has a specific item.
+set.has('a'); // => true
+set.has('e'); // => false
+
+// Get an array of items in the set.
+set.values(); // => ['a', 'b', 'c']
+
+// Iterate over items in the set.
+set.each(function(item) {
+  console.log(item) // 'a', 'b', 'c'
+});
+
+// Copy a set.
+var newSet = set.copy(); // ('a', 'b', 'c')
+```
+<!---
+### Sets of objects
+```javascript
+
+```
+### About Keys
+```javascript
+
+```
+-->
+
+One issue with mixing and matching numeric and string values is that the numeric value `1` and the string `"1"` both evaluate to `"1"` when used as a key in an object literal, which is used in the set's underlying histogram. swiftSet gets around this limitation by providing functionality to give numeric values and numeric strings (or any type for that matter) a wrapper object which returns a unique key according to the type of value.
+
