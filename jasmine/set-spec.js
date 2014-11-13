@@ -711,6 +711,27 @@ describe('Set', function() {
     });
   });
 
+  describe('copy', function() {
+    it('can reliably copy a set', function() {
+      var
+      o1 = { id: 1 },
+      o2 = { id: 2 },
+      o3 = { id: 3 },
+      o4 = { id: 4 },
+      o5 = { id: 5 },
+      set1 = new Set([o1, o2, o2, o3, o3, o3], 'id'),
+      set2 = set1.copy();
+
+      set2.add(o4, o5);
+      expect(set2.size()).toEqual(5);
+
+      expect(set2.has(o1)).toEqual(true);
+      expect(set2.has(o2)).toEqual(true);
+      expect(set2.has(o3)).toEqual(true);
+      expect(set2.has(o4)).toEqual(true);
+      expect(set2.has(o5)).toEqual(true);
+    });
+  });
 });
 
 })(window.swiftSet, undefined);

@@ -600,6 +600,37 @@ describe('Histogram', function() {
 
     });
   });
+
+  describe('copy', function() {
+    it('can reliably copy a histogram', function() {
+      var
+      o1 = { id: 1 },
+      o2 = { id: 2 },
+      o3 = { id: 3 },
+      o4 = { id: 4 },
+      o5 = { id: 5 },
+      hist1 = new Histogram([o1, o2, o2, o3, o3, o3], 'id'),
+      hist2 = hist1.copy();
+
+      hist2.add(o4, o5);
+      expect(hist2.size()).toEqual(5);
+      expect(hist2.total()).toEqual(8);
+      expect(hist2.min()).toEqual(1);
+      expect(hist2.max()).toEqual(3);
+
+      expect(hist2.has(o1)).toEqual(true);
+      expect(hist2.has(o2)).toEqual(true);
+      expect(hist2.has(o3)).toEqual(true);
+      expect(hist2.has(o4)).toEqual(true);
+      expect(hist2.has(o5)).toEqual(true);
+
+      expect(hist2.count(o1)).toEqual(1);
+      expect(hist2.count(o2)).toEqual(2);
+      expect(hist2.count(o3)).toEqual(3);
+      expect(hist2.count(o4)).toEqual(1);
+      expect(hist2.count(o5)).toEqual(1);
+    });
+  });
 });
 
 })(window.swiftSet, undefined);
