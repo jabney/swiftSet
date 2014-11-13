@@ -61,7 +61,11 @@ set.items(); // => ['a', 'b', 'c']
 
 // Iterate over items in the set.
 set.each(function(item) {
-  console.log(item) // 'a', 'b', 'c'
+  console.log(item); // 'a', 'b', 'c'
+});
+// ... or ...
+set.items().forEach(function(item) {
+  console.log(item); // 'a', 'b', 'c'
 });
 
 // Copy a set.
