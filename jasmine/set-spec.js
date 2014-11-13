@@ -3,7 +3,7 @@
 
 // Imports
 var
-  Histogram = swiftSet.Histogram,
+  // Histogram = swiftSet.Histogram,
   Set = swiftSet.Set
 ;
 
@@ -48,7 +48,7 @@ describe('Set', function() {
       expect(set.size()).toEqual(3);
     });
 
-    it('creates an accurate histogram of objects', function() {
+    it('creates an accurate set of objects', function() {
       var obj = [o1, o1, o2, o2, o3, o3];
       var set = new Set(obj);
 
@@ -77,16 +77,16 @@ describe('Set', function() {
       expect(set.has(5)).toBe(true);
       expect(set.size()).toEqual(3);
 
-      expect(set.values()).not.toContain(1);
-      expect(set.values()).not.toContain(2);
-      expect(set.values()).toContain(3);
-      expect(set.values()).toContain(4);
-      expect(set.values()).toContain(5);
-      expect(set.values().length).toEqual(3);
+      expect(set.items()).not.toContain(1);
+      expect(set.items()).not.toContain(2);
+      expect(set.items()).toContain(3);
+      expect(set.items()).toContain(4);
+      expect(set.items()).toContain(5);
+      expect(set.items().length).toEqual(3);
       
       set = new Set(num)
-        .addValues([3, 4, 4, 5, 5])
-        .removeValues([1, 2]);
+        .addItems([3, 4, 4, 5, 5])
+        .removeItems([1, 2]);
 
       expect(set.has(1)).toBe(false);
       expect(set.has(2)).toBe(false);
@@ -95,12 +95,12 @@ describe('Set', function() {
       expect(set.has(5)).toBe(true);
       expect(set.size()).toEqual(3);
 
-      expect(set.values()).not.toContain(1);
-      expect(set.values()).not.toContain(2);
-      expect(set.values()).toContain(3);
-      expect(set.values()).toContain(4);
-      expect(set.values()).toContain(5);
-      expect(set.values().length).toEqual(3);
+      expect(set.items()).not.toContain(1);
+      expect(set.items()).not.toContain(2);
+      expect(set.items()).toContain(3);
+      expect(set.items()).toContain(4);
+      expect(set.items()).toContain(5);
+      expect(set.items().length).toEqual(3);
       
     });
 
@@ -118,16 +118,16 @@ describe('Set', function() {
       expect(set.has('e')).toBe(true);
       expect(set.size()).toEqual(3);
 
-      expect(set.values()).not.toContain('a');
-      expect(set.values()).not.toContain('v');
-      expect(set.values()).toContain('c');
-      expect(set.values()).toContain('d');
-      expect(set.values()).toContain('e');
-      expect(set.values().length).toEqual(3);
+      expect(set.items()).not.toContain('a');
+      expect(set.items()).not.toContain('v');
+      expect(set.items()).toContain('c');
+      expect(set.items()).toContain('d');
+      expect(set.items()).toContain('e');
+      expect(set.items().length).toEqual(3);
       
       set = new Set(chr)
-        .addValues(['c', 'd', 'd', 'e', 'e'])
-        .removeValues(['a', 'b']);
+        .addItems(['c', 'd', 'd', 'e', 'e'])
+        .removeItems(['a', 'b']);
 
       expect(set.has('a')).toBe(false);
       expect(set.has('b')).toBe(false);
@@ -136,12 +136,12 @@ describe('Set', function() {
       expect(set.has('e')).toBe(true);
       expect(set.size()).toEqual(3);
 
-      expect(set.values()).not.toContain('a');
-      expect(set.values()).not.toContain('v');
-      expect(set.values()).toContain('c');
-      expect(set.values()).toContain('d');
-      expect(set.values()).toContain('e');
-      expect(set.values().length).toEqual(3);
+      expect(set.items()).not.toContain('a');
+      expect(set.items()).not.toContain('v');
+      expect(set.items()).toContain('c');
+      expect(set.items()).toContain('d');
+      expect(set.items()).toContain('e');
+      expect(set.items().length).toEqual(3);
     });
 
     it('accurately adds and removes one or more objects', function() {
@@ -158,16 +158,16 @@ describe('Set', function() {
       expect(set.has(o5)).toBe(true);
       expect(set.size()).toEqual(3);
 
-      expect(set.values()).not.toContain(o1);
-      expect(set.values()).not.toContain(o2);
-      expect(set.values()).toContain(o3);
-      expect(set.values()).toContain(o4);
-      expect(set.values()).toContain(o5);
-      expect(set.values().length).toEqual(3);
+      expect(set.items()).not.toContain(o1);
+      expect(set.items()).not.toContain(o2);
+      expect(set.items()).toContain(o3);
+      expect(set.items()).toContain(o4);
+      expect(set.items()).toContain(o5);
+      expect(set.items().length).toEqual(3);
       
       set = new Set(obj)
-        .addValues([o3, o4, o4, o5, o5])
-        .removeValues([o1, o2]);
+        .addItems([o3, o4, o4, o5, o5])
+        .removeItems([o1, o2]);
 
       expect(set.has(o1)).toBe(false);
       expect(set.has(o2)).toBe(false);
@@ -176,12 +176,12 @@ describe('Set', function() {
       expect(set.has(o5)).toBe(true);
       expect(set.size()).toEqual(3);
 
-      expect(set.values()).not.toContain(o1);
-      expect(set.values()).not.toContain(o2);
-      expect(set.values()).toContain(o3);
-      expect(set.values()).toContain(o4);
-      expect(set.values()).toContain(o5);
-      expect(set.values().length).toEqual(3);
+      expect(set.items()).not.toContain(o1);
+      expect(set.items()).not.toContain(o2);
+      expect(set.items()).toContain(o3);
+      expect(set.items()).toContain(o4);
+      expect(set.items()).toContain(o5);
+      expect(set.items().length).toEqual(3);
     });
   });
 
@@ -325,8 +325,8 @@ describe('Set', function() {
       calls = { method: function() {}};
       spyOn(calls, 'method');
 
-      set.each(function(value, count, key) {
-        calls.method(value);
+      set.each(function(item, count, key) {
+        calls.method(item);
       });
       expect(calls.method).toHaveBeenCalledWith(7);
       expect(calls.method).toHaveBeenCalledWith(8);
@@ -334,9 +334,9 @@ describe('Set', function() {
       expect(calls.method).not.toHaveBeenCalledWith(0);
     });
 
-    it('produces a correct list of values', function() {
+    it('produces a correct list of items', function() {
       var set = new Set([7, 8, 8, 9, 9, 9]),
-        values = set.values();
+        values = set.items();
 
       expect(values).toContain(7);
       expect(values).toContain(8);
@@ -395,7 +395,7 @@ describe('Set', function() {
       expect(set2.has(wrap(3))).toEqual(false);
 
       expect(set1.keyify()).not.toEqual(set2.keyify());
-      set1.addValues(set2.values());
+      set1.addItems(set2.items());
       expect(set1.size()).toEqual(6);
     });
 
@@ -407,7 +407,7 @@ describe('Set', function() {
       expect(set1.equals(set3)).toEqual(false);
     });
 
-    it('can use sets as values in a set', function() {
+    it('can use sets as items in a set', function() {
       var s1 = new Set([1, 2, 3, 3, 3, 3]),
         s2 = new Set([4, 5, 5, 6, 6, 6]),
         s3 = new Set([7, 8, 8, 9, 9, 9]),
@@ -422,7 +422,7 @@ describe('Set', function() {
     });
   });
   
-  describe('mixed values', function() {
+  describe('mixed items', function() {
       var wrap = Set.wrapObj(), isWrapped = Set.isWrapped,
       set1 = new Set([wrap(1), wrap(1), '1', wrap(2), '2', o1, o2]),
       set2 = set1.copy();
@@ -452,8 +452,8 @@ describe('Set', function() {
       expect(set2.has(o2)).toEqual(true);
       expect(set2.equals(set2)).toEqual(true);
 
-      values = set1.values().map(function(item) {
-        return isWrapped(item) ? item.value : item;
+      values = set1.items().map(function(item) {
+        return isWrapped(item) ? item.item : item;
       });
 
       expect(values).toContain(1);
@@ -463,8 +463,8 @@ describe('Set', function() {
       expect(values).toContain(o1);
       expect(values).toContain(o2);
 
-      values = set2.values().map(function(item) {
-        return isWrapped(item) ? item.value : item;
+      values = set2.items().map(function(item) {
+        return isWrapped(item) ? item.item : item;
       });
 
       expect(values).toContain(1);
@@ -484,7 +484,7 @@ describe('Set', function() {
       o5 = { id: 'o5' },
       wrap = Set.wrapObj(toStr),
       set = new Set([wrap(o1), wrap(o1), wrap(o2), wrap(o3)]);
-      function toStr() { return this.value.id; }
+      function toStr() { return this.item.id; }
 
       expect(set.size()).toEqual(3);
       expect(set.has(wrap(o1))).toEqual(true);

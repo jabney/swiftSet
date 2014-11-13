@@ -12,7 +12,7 @@ Include a reference to swiftSet.js in your project.
 
 `<script type="text/javascript" src="swiftSet.js"></script>`
 
-Import `Set` from the swiftSet namespace to whichever context you want to use it in.
+Import `Set` from the swiftSet namespace into whichever context you want to use it in.
 
 ```javascript
 // Import swiftSet's Set class.
@@ -22,10 +22,10 @@ var Set = swiftSet.Set;
 Create a new set.
 
 ```javascript
-// Create an empty set and then add values...
+// Create an empty set and then add items...
 var set = new Set().add(1, 2, 2, 3, 3, 3), // (1, 2, 3)
 
-// ...or pass an array of values to the constructor.
+// ...or pass an array of items to the constructor.
 set = new Set([1, 2, 2, 3, 3, 3]); // (1, 2, 3)
 ```
 ### More
@@ -44,10 +44,10 @@ set.add('d', 'e'); // ('a', 'b', 'c', 'd', 'e')
 set.remove('a', 'b'); // ('c', 'd', 'e')
 
 // Add items to the set via an array.
-set.addValues(['a', 'b']); // ('a', 'b', 'c', 'd', 'e')
+set.addItems(['a', 'b']); // ('a', 'b', 'c', 'd', 'e')
 
 // Remove items from the set via an array.
-set.removeValues(['d', 'e']); // ('a', 'b', 'c')
+set.addItems(['d', 'e']); // ('a', 'b', 'c')
 
 // Get the number of items in the set.
 set.size(); // => 3
@@ -57,7 +57,7 @@ set.has('a'); // => true
 set.has('e'); // => false
 
 // Get an array of items in the set.
-set.values(); // => ['a', 'b', 'c']
+set.items(); // => ['a', 'b', 'c']
 
 // Iterate over items in the set.
 set.each(function(item) {
@@ -67,6 +67,7 @@ set.each(function(item) {
 // Copy a set.
 var newSet = set.copy(); // ('a', 'b', 'c')
 ```
+
 <!---
 ### Sets of objects
 ```javascript
@@ -78,5 +79,5 @@ var newSet = set.copy(); // ('a', 'b', 'c')
 ```
 -->
 
-One issue with mixing and matching numeric and string values is that the numeric value `1` and the string `"1"` both evaluate to `"1"` when used as a key in an object literal, which is used in the set's underlying histogram. swiftSet gets around this limitation by providing functionality to give numeric values and numeric strings (or any type for that matter) a wrapper object which returns a unique key according to the type of value.
+One issue with mixing and matching numeric and string values is that the numeric value `1` and the string `"1"` both evaluate to `"1"` when used as a key in an object literal, which is used in the `Set`'s underlying histogram. swiftSet gets around this limitation by providing functionality to give numeric values and numeric strings (or any type for that matter) a wrapper object which returns a unique key according to the type of value.
 

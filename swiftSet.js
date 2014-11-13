@@ -6,8 +6,8 @@
 // Set and Histogram - the Histogram is the backing object for
 // Set, but it can also be used to record frequencies of discrete
 // values in arrays, strings, and objects; the Set object,
-// which is based upon Histogram, stores unique values and can
-// process even large arrays of values very fast. 
+// which is based upon Histogram, stores unique items and can
+// process even large arrays of items very fast. 
 // ---------------------------------------------------------------
 
 // ---------------------------------------------------------------
@@ -57,7 +57,7 @@ function encodeObjType(obj) {
 
 // Wrap a built-in type and give it a unique key generator.
 function Wrapper(obj, toStr) {
-  this.value = obj;
+  this.item = obj;
   this.toString = toStr ? toStr : function() {
     return '(' + obj + ':' + encodeObjType(obj) + ')';
   };
@@ -77,7 +77,7 @@ function isWrapped(obj) {
 }
 
 // ---------------------------------------------------------------
-// Set - produces a set of unique values from an array (or another
+// Set - produces a set of unique items from an array (or another
 // set) that can be queried for its properties. It supports four
 // common set operations (union, intersection, difference,
 // complement) as well as some useful utility methods. The set
@@ -112,20 +112,20 @@ function isWrapped(obj) {
 // ---------------------------------------------------------------
 
 function Set(a, key) {
-  var hist = new Histogram(a, key), vals = hist.values();
+  var hist = new Histogram(a, key), cachedItems = hist.items();
 
   // Returns a filtered array based on the given evaluator,
   // or absent an evaluator, returns a merged histogram.
   this.process = function(b, evaluator) {
-    var values = (b instanceof Set) ? b.values() : b,
+    var items = (b instanceof Set) ? b.items() : b,
     out = [],
-    a = new Histogram(vals, key), 
-    b = new Histogram(values, key).normalize(2);
+    a = new Histogram(cachedItems, key), 
+    b = new Histogram(items, key).normalize(2);
     // Merge the histograms and evaluate the contents.
     a.merge(b);
     if(evaluator) {
-      a.each(function(value, count) {
-        evaluator(count) && out.push(value); 
+      a.each(function(item, count) {
+        evaluator(count) && out.push(item); 
       });
       return out;
     } else {
@@ -133,19 +133,19 @@ function Set(a, key) {
     }
   };
 
-  // Iterates through the values in this set.
+  // Iterates through the items in this set.
   this.each = function(action, context) {
-    return hist.each(function(value) {
-      return action.call(this, value);
+    return hist.each(function(item) {
+      return action.call(this, item);
     }, context);
   };
 
-  // An array of values comprising the set.
-  this.values = function() {
-    return hist.values();
+  // An array of items comprising the set.
+  this.items = function() {
+    return hist.items();
   };
 
-  // An array of unwrapped values.
+  // An array of unwrapped items.
   this.unwrap = function() {
     return hist.unwrap();
   };
@@ -153,7 +153,7 @@ function Set(a, key) {
   // Encodes key/type pairs for each element in the set.
   this.keyify = function() {
     var uid = [], typeCode;
-    hist.each(function(value, count, key) {
+    hist.each(function(item, count, key) {
       uid.push(key + ',');
     });
     return '{' + uid.sort().join('').slice(0, -1) + '}';
@@ -164,37 +164,37 @@ function Set(a, key) {
     return this.keyify();
   };
 
-  // Add a value or values to this set.
+  // Add an item or items to this set.
   this.add = function() {
-    hist.addValues(slice.call(arguments, 0));
-    vals = hist.values();
+    hist.addItems(slice.call(arguments, 0));
+    cachedItems = hist.items();
     return this;
   };
 
-  // Remove a value or values from this set.
+  // Remove an item or items from this set.
   this.remove = function() {
-    hist.removeValues(slice.call(arguments, 0));
-    vals = hist.values();
+    hist.removeItems(slice.call(arguments, 0));
+    cachedItems = hist.items();
     return this;
   };
 
-  // Add multiple values to the set via an array of values.
-  this.addValues = function(values) {
-    hist.addValues(values);
-    vals = hist.values();
+  // Add multiple items to the set via an array of items.
+  this.addItems = function(items) {
+    hist.addItems(items);
+    cachedItems = hist.items();
     return this;
   };
 
-  // Remove multiple values from the set via an array of values.
-  this.removeValues = function(values) {
-    hist.removeValues(values);
-    vals = hist.values();
+  // Remove multiple items from the set via an array of items.
+  this.removeItems = function(items) {
+    hist.removeItems(items);
+    cachedItems = hist.items();
     return this;
   };
 
   // Returns a copy of this set.
   this.copy = function() {
-    return new Set(vals, key);
+    return new Set(cachedItems, key);
   };
 
   // The number of unique elements in the set.
@@ -203,8 +203,8 @@ function Set(a, key) {
   };
 
   // Determines if a value is present in the set.
-  this.has = function(value) {
-    return hist.has(value);
+  this.has = function(item) {
+    return hist.has(item);
   };
 }
 
@@ -220,21 +220,21 @@ Set.prototype = {
   // array passed to the set operation method below.
   // ---------------------------------------------------------------
 
-  // The set of values from each set (a or b).
+  // The set of items from each set (a or b).
   union: function(b) {
     return this.process(b, function(count) {
       return true;
     });
   },
 
-  // The set of values that are common to both sets (a and b).
+  // The set of items that are common to both sets (a and b).
   intersection: function(b) {
     return this.process(b, function(count) {
       return count === 3;
     });
   },
 
-  // Symmetric difference. The set of values from both sets
+  // Symmetric difference. The set of items from both sets
   // that are unique to each set (union minus intersection).
   // Note that for disjoint sets, this is the same as the 
   // union of 'a' and 'b'.
@@ -244,7 +244,7 @@ Set.prototype = {
     });
   },
 
-  // Relative complement. The set of values from 'b' except where
+  // Relative complement. The set of items from 'b' except where
   // the value is also in 'a' (b minus a).
   complement: function(b) {
     return this.process(b, function(count) {
@@ -388,7 +388,7 @@ swiftSet.Set = Set;
 // // "that", 3, "all", 1, "men", 1, "are", 3, "created", 1, "equal", 1, ...]
 // ---------------------------------------------------------------
 
-function Histogram(values, key) {
+function Histogram(items, key) {
   var hist = Object.create(null), _length = 0, _max = 0,
   // Generate a uid function depending on whether key is specified
   // and whether it's a function or value.
@@ -397,7 +397,7 @@ function Histogram(values, key) {
       // If key is not defined in the constructor, look for a property 
       // on the object named 'key' and use it as a value or function.
       // This fallback is necessary so that objects can be mixed with
-      // other values in the histogram.
+      // other items in the histogram.
       function(obj) {
         var key = obj.key, type = typeof key;
         return type === 'undefined' ? obj : 
@@ -412,31 +412,31 @@ function Histogram(values, key) {
         function(obj) { return obj[key]; }
   })();
 
-  // Initialize histogram with given values.
-  values && values.forEach(function(value) {
-    add(value);
+  // Initialize histogram with given items.
+  items && items.forEach(function(item) {
+    add(item);
   });
 
-  // Add a single value to the histogram. If count is specified,
-  // set the value's count; this facilitates the merge operation.
-  function add(value, count) {
-    var key = uid(value),
+  // Add a single item to the histogram. If count is specified,
+  // set the item's count; this facilitates the merge operation.
+  function add(item, count) {
+    var key = uid(item),
     count = typeof count === 'undefined' ? 1 : count;
     // If the entry already exists, update the count.
     if (hist[key]) {
       hist[key].count += count;
     // Otherwise create a new entry and update the length.
     } else {
-      hist[key] = { value: value, count: count };
+      hist[key] = { item: item, count: count };
       _length++;
     }
     _max = Math.max(_max, hist[key].count);
     return this;
   }
 
-  // Remove a single value from the histogram.
-  function remove(value) {
-    var key = uid(value);
+  // Remove a single item from the histogram.
+  function remove(item) {
+    var key = uid(item);
     if (hist[key]) {
       delete hist[key];
       _length--;
@@ -449,37 +449,37 @@ function Histogram(values, key) {
     var h = Object.create(null);
     for (var key in hist) {
       h[key] = Object.create(null);
-      h[key].value = hist[key].value;
+      h[key].item = hist[key].item;
       h[key].count = hist[key].count;
     }
     return h;
   }
 
-  // Add multiple values to the histogram via an array of values.
-  this.addValues = function(values) {
-    values.forEach(function(value) {
-      add(value);
+  // Add multiple item to the histogram via an array of item.
+  this.addItems = function(items) {
+    items.forEach(function(item) {
+      add(item);
     });
     return this;
   };
 
-  // Remove multiple values from the histogram via an array of values.
-  this.removeValues = function(values) {
-    values.forEach(function(value) {
-      remove(value);
+  // Remove multiple items from the histogram via an array of items.
+  this.removeItems = function(items) {
+    items.forEach(function(item) {
+      remove(item);
     });
     return this;
   };
 
-  // Add one or more values to the histogram.
+  // Add one or more items to the histogram.
   this.add = function() {
-    this.addValues(slice.call(arguments, 0));
+    this.addItems(slice.call(arguments, 0));
     return this;
   };
 
-  // Remove one or more values from the histogram.
+  // Remove one or more items from the histogram.
   this.remove = function() {
-    this.removeValues(slice.call(arguments, 0));
+    this.removeItems(slice.call(arguments, 0));
     return this;
   };
 
@@ -500,19 +500,19 @@ function Histogram(values, key) {
   };
 
   // Iterate through each of the histogram's entries. If action
-  // returns a truthy value, the loop terminates.
+  // returns a truthy item, the loop terminates.
   this.each = function(action, context) {
     for (var key in hist) {
       if (action.call(
-        context, hist[key].value, hist[key].count, key
+        context, hist[key].item, hist[key].count, key
      )) break;
     }
     return this;
   };
 
-  // Returns true if the specified value exists in the histogram.
-  this.has = function(value) {
-    var key = uid(value);
+  // Returns true if the specified item exists in the histogram.
+  this.has = function(item) {
+    var key = uid(item);
     return hist[key] === undefined ? false : true;
   };
 
@@ -521,7 +521,7 @@ function Histogram(values, key) {
     return _length;
   };
 
-  // Returns the maximum count of values in the histogram.
+  // Returns the maximum count of items in the histogram.
   this.max = function() {
     return _max;
   };
@@ -534,8 +534,8 @@ function Histogram(values, key) {
 
   // Merges the given histogram into this one.
   this.merge = function(h) {
-    h.each(function(value, count) {
-      add(value, count);
+    h.each(function(item, count) {
+      add(item, count);
     });
     return this;
   };
@@ -547,31 +547,31 @@ Histogram.isWrapped = isWrapped;
 
 Histogram.prototype = {
 
-  // Returns an array of the histogram's values.
-  values: function() {
-    return this.map(function(value) {
-      return value;
+  // Returns an array of the histogram's items.
+  items: function() {
+    return this.map(function(item) {
+      return item;
     });
   },
 
   // Returns an array of the histogram's counts.
   counts: function() {
-    return this.map(function(value, count) {
+    return this.map(function(item, count) {
       return count;
     });
   },
 
   // Returns an array of the histogram's keys.
   keys: function() {
-    return this.map(function(value, count, key) {
+    return this.map(function(item, count, key) {
       return key;
     });
   },
 
-  // Returns an array of values, but unwraps any wrapped objects.
+  // Returns an array of items, but unwraps any wrapped objects.
   unwrap: function() {
-    return this.map(function(value) {
-      return isWrapped(value) ? value.value : value;
+    return this.map(function(item) {
+      return isWrapped(item) ? item.item : item;
     });
   },
 
@@ -600,8 +600,8 @@ Histogram.prototype = {
   // Returns an array of user-transformed entries.
   map: function(action, context) {
     var out = [];
-    this.each(function(value, count, key) {
-      out.push(action.call(this, value, count, key));
+    this.each(function(item, count, key) {
+      out.push(action.call(this, item, count, key));
     }, context);
     return out;
   },
@@ -617,7 +617,7 @@ Histogram.prototype = {
   // Histograms can be considered equivalent if their keys are equal.
   keyify: function() {
     var uid = [], typeCode;
-    this.each(function(value, count, key) {
+    this.each(function(item, count, key) {
       uid.push(key + ':' + count + ',');
     });
     return '{' + uid.sort().join('').slice(0, -1) + '}';

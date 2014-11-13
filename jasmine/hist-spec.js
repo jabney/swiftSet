@@ -114,8 +114,8 @@ describe('Histogram', function() {
       expect(hist.max()).toEqual(4);
 
       hist = new Histogram(num)
-        .addValues([3, 4, 4, 5, 5])
-        .removeValues([1, 2]);
+        .addItems([3, 4, 4, 5, 5])
+        .removeItems([1, 2]);
 
       expect(hist.has(1)).toBe(false);
       expect(hist.has(2)).toBe(false);
@@ -160,8 +160,8 @@ describe('Histogram', function() {
       expect(hist.max()).toEqual(4);
 
       hist = new Histogram(chr)
-        .addValues(['c', 'd', 'd', 'e', 'e'])
-        .removeValues(['a', 'b']);
+        .addItems(['c', 'd', 'd', 'e', 'e'])
+        .removeItems(['a', 'b']);
 
       expect(hist.has('a')).toBe(false);
       expect(hist.has('b')).toBe(false);
@@ -206,8 +206,8 @@ describe('Histogram', function() {
       expect(hist.max()).toEqual(4);
 
       hist = new Histogram(obj)
-        .addValues([o3, o4, o4, o5, o5])
-        .removeValues([o1, o2]);
+        .addItems([o3, o4, o4, o5, o5])
+        .removeItems([o1, o2]);
 
       expect(hist.has(o1)).toBe(false);
       expect(hist.has(o2)).toBe(false);
@@ -416,7 +416,7 @@ describe('Histogram', function() {
 
     it('produces a correct list of values', function() {
       var hist = new Histogram([7, 8, 8, 9, 9, 9]),
-        values = hist.values();
+        values = hist.items();
 
       expect(values).toContain(7);
       expect(values).toContain(8);
@@ -495,7 +495,7 @@ describe('Histogram', function() {
       expect(hist2.has(wrap(3))).toEqual(false);
 
       expect(hist1.keyify()).not.toEqual(hist2.keyify());
-      hist1.addValues(hist2.values());
+      hist1.addItems(hist2.items());
       expect(hist1.size()).toEqual(6);
     });
 
@@ -565,8 +565,8 @@ describe('Histogram', function() {
       expect(hist2.has(o2)).toEqual(true);
       expect(hist2.equals(hist1)).toEqual(true);
 
-      values = hist1.values().map(function(item) {
-        return isWrapped(item) ? item.value : item;
+      values = hist1.items().map(function(item) {
+        return isWrapped(item) ? item.item : item;
       });
 
       expect(values).toContain(1);
@@ -576,8 +576,8 @@ describe('Histogram', function() {
       expect(values).toContain(o1);
       expect(values).toContain(o2);
 
-      values = hist2.values().map(function(item) {
-        return isWrapped(item) ? item.value : item;
+      values = hist2.items().map(function(item) {
+        return isWrapped(item) ? item.item : item;
       });
 
       expect(values).toContain(1);
