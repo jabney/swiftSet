@@ -4,7 +4,7 @@ swiftSet.js
 swiftSet.js provides a `Set` data type for storing unique values and performing basic set operations _swiftly_. It also includes a discrete-value `Histogram` class which is used as a backing object for `Set`, although it can also be used on its own. swiftSet can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
 
 # Set
-This section describes how to get started using `Set` then describes its methods as well as how to work with sets of objects and mixed values.
+This section describes how to get started using `Set` then describes its methods as well as how to work with sets of objects and mixed values. **Note:** the order of items in a set is *undefined*.
 
 ## Usage
 
@@ -63,7 +63,7 @@ set.items(); // => ['a', 'b', 'c']
 set.each(function(item) {
   console.log(item); // 'a', 'b', 'c'
 });
-// ... or ...
+// ... or, since set.items() returns an array ...
 set.items().forEach(function(item) {
   console.log(item); // 'a', 'b', 'c'
 });
