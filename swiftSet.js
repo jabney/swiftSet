@@ -121,7 +121,7 @@ function Set(a, key) {
     out = [],
     a = new Histogram(vals, key), 
     b = new Histogram(values, key).normalize(2);
-    // Merge the histograms and evaluate their contents.
+    // Merge the histograms and evaluate the contents.
     a.merge(b);
     if(evaluator) {
       a.each(function(value, count) {
@@ -285,6 +285,7 @@ Set.process = function(a, b, evaluator) {
       hist[value] = { value: value, count: 1 };
     }
   });
+  // Merge b into the histogram.
   b.forEach(function(value) {
     if (hist[value]) {
       if (hist[value].count === 1)
@@ -293,6 +294,7 @@ Set.process = function(a, b, evaluator) {
       hist[value] = { value: value, count: 2 };
     }
   });
+  // Call the given evaluator.
   if (evaluator) {
     for (key in hist) {
       if (evaluator(hist[key].count)) out.push(hist[key].value);
@@ -388,7 +390,7 @@ swiftSet.Set = Set;
 
 function Histogram(values, key) {
   var hist = Object.create(null), _length = 0, _max = 0,
-  // Generates a uid function depending on whether key is specified
+  // Generate a uid function depending on whether key is specified
   // and whether it's a function or value.
   uid = (function() {
     return typeof key === 'undefined' ?
@@ -403,7 +405,7 @@ function Histogram(values, key) {
       } :
       // If key is specified in the constructor, use it as a value
       // or a function depending on its type. In this instance,
-      // all values in the histogram must be objects with this
+      // all entries in the histogram must be objects with this
       // property present.
       typeof key === 'function' ?
         function(obj) { return key.call(obj); } :
