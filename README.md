@@ -4,7 +4,7 @@ swiftSet.js
 swiftSet.js provides a `Set` data type for storing unique values and performing basic set operations _swiftly_. It also includes a discrete-value `Histogram` class which is used as a backing object for `Set`, although it can also be used on its own. swiftSet can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
 
 # Set
-This section describes how to get started using `Set` then describes its methods as well as how to work with sets of objects and mixed values. **Note:** the order of items in a set is *undefined*.
+This section describes how to get started using `Set` then describes its methods as well as how to work with objects and mixed values. **Note:** the order of items in a set is *undefined*.
 
 ## Usage
 
@@ -15,24 +15,28 @@ Include a reference to swiftSet.js in your project.
 Import `Set` from the swiftSet namespace into whichever context you want to use it in.
 
 ```javascript
-// Import swiftSet's Set class.
-var Set = swiftSet.Set;
-```
+var 
 
+// Import swiftSet's Set class.
+Set = swiftSet.Set,
+```
 Create a new set.
 
 ```javascript
 // Create an empty set and then add items...
-var set = new Set().add(1, 2, 2, 3, 3, 3), // (1, 2, 3)
+set = new Set().add(1, 2, 2, 3, 3, 3), // (1, 2, 3),
 
 // ...or pass an array of items to the constructor.
-set = new Set([1, 2, 2, 3, 3, 3]); // (1, 2, 3)
+set = new Set([1, 2, 2, 3, 3, 3]); // (1, 2, 3);
 ```
+
 ### More
 
 ```javascript
+var
+
 // Import Set
-var Set = swiftSet.Set,
+Set = swiftSet.Set,
 
 // Create a new set.
 set = new Set(['a', 'b', 'c']); // ('a', 'b', 'c')
@@ -76,9 +80,12 @@ var newSet = set.copy(); // ('a', 'b', 'c')
 `Set` supports five basic set operations: union, intersection, difference, complement, and equals. `difference` is the symmetric difference, and `complement` is the relative complement.
 
 ```javascript
-var Set = swiftSet.Set;
+var
 
-var a = new Set([1, 2, 3]),
+// Import.
+Set = swiftSet.Set,
+
+a = new Set([1, 2, 3]),
 b = new Set([2, 3, 4]);
 
 // Union A ∪ B joins two sets together.
@@ -104,7 +111,7 @@ a.equals(b); // => false
 ```
 
 ### Sets of Objects
-Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness, to differentiate it from other objeces. This is often some sort if ID value or unique identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
+Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness, to differentiate it from other objeces. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
 
 #### The `toString` Method
 This method requires that the objects in the set all have a toString method which can return a unique identifier on the object.
@@ -116,8 +123,9 @@ function toStr() {
   return this.id;
 }
 
+var
 // Create objects with unique ids and add a reference to the toString function.
-var o1 = {id: 1, toString: toStr},
+o1 = {id: 1, toString: toStr},
 {id: 2, toString: toStr},
 {id: 3, toString: toStr},
 {id: 4, toString: toStr},
@@ -131,7 +139,7 @@ a.size(); // => 3
 b.size(); // => 3
 
 // Perform an operation.
-a.union(b); // => [(o1), (o2), (o3), (o4)]
+a.union(b); // => [o1, o2, o3, o4]
 ```
 
 **Note:** Since in the above case the objects are given ids of 1-4, they will have those keys in `Set`'s internal histogram, and so will match numbers `1` through `4` as well as strings `"1"` through `"4"`. If you're mixing objects with numbers or strings in a set, you must make sure that the objects' id values will not interfere, unless you're intention is to allow an object with `id: 1` to be treated as the same value as numeric `1` and string `"1"`. See [Mixed Values](#mixed-values) for information on how to make sure that numeric values and numeric strings can be treated as separate items in `Set`.
