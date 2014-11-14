@@ -81,19 +81,20 @@ var Set = swiftSet.Set;
 var a = new Set([1, 2, 3]),
 b = new Set([2, 3, 4]);
 
-// Union A &cup; B joins two sets together.
+// Union A ∪ B joins two sets together.
 a.union([2, 3, 4]); // => [1, 2, 3, 4]
 a.union(b); // => [1, 2, 3, 4]
 
-// Intersection A &#8745; B returns elements common to both sets.
+// Intersection A ∩ B returns elements common to both sets.
 a.intersection([2, 3, 4]); // => [2, 3]
 a.intersection(b); // => [2, 3]
 
-// Difference A &delta; B returns items not common to both sets.
+// Symmetric Difference A ∆ B returns items not common to both sets.
 a.difference([2, 3, 4]); // => [1, 4]
 a.difference(b); // => [1, 4]
 
-// Complement A \ B returns elements in A that are not also in B (A - B).
+// Relative Complement A \ B returns elements in A 
+// that are not also in B (A - B).
 a.complement([2, 3, 4]); // => [1]
 a.complement(b); // => [1];
 
