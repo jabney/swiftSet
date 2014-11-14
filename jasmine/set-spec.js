@@ -552,15 +552,15 @@ describe('Set', function() {
 
     it('can pefrom a proper complement', function() {
 
-      expect(set1.complement(set2)).not.toContain(1);
+      expect(set1.complement(set2)).toContain(1);
       expect(set1.complement(set2)).not.toContain(2);
       expect(set1.complement(set2)).not.toContain(3);
-      expect(set1.complement(set2)).toContain(4);
+      expect(set1.complement(set2)).not.toContain(4);
       
-      expect(set1.complement([2, 3, 4])).not.toContain(1);
+      expect(set1.complement([2, 3, 4])).toContain(1);
       expect(set1.complement([2, 3, 4])).not.toContain(2);
       expect(set1.complement([2, 3, 4])).not.toContain(3);
-      expect(set1.complement([2, 3, 4])).toContain(4);
+      expect(set1.complement([2, 3, 4])).not.toContain(4);
     });
 
     it('can determine set equivalence', function() {
@@ -620,15 +620,15 @@ describe('Set', function() {
 
     it('can pefrom a proper complement', function() {
 
-      expect(set1.complement(set2)).not.toContain('a');
+      expect(set1.complement(set2)).toContain('a');
       expect(set1.complement(set2)).not.toContain('b');
       expect(set1.complement(set2)).not.toContain('c');
-      expect(set1.complement(set2)).toContain('d');
+      expect(set1.complement(set2)).not.toContain('d');
       
-      expect(set1.complement(['b', 'c', 'd'])).not.toContain('a');
+      expect(set1.complement(['b', 'c', 'd'])).toContain('a');
       expect(set1.complement(['b', 'c', 'd'])).not.toContain('b');
       expect(set1.complement(['b', 'c', 'd'])).not.toContain('c');
-      expect(set1.complement(['b', 'c', 'd'])).toContain('d');
+      expect(set1.complement(['b', 'c', 'd'])).not.toContain('d');
     });
 
     it('can determine set equivalence', function() {
@@ -688,15 +688,15 @@ describe('Set', function() {
 
     it('can pefrom a proper complement', function() {
 
-      expect(set1.complement(set2)).not.toContain(o1);
+      expect(set1.complement(set2)).toContain(o1);
       expect(set1.complement(set2)).not.toContain(o2);
       expect(set1.complement(set2)).not.toContain(o3);
-      expect(set1.complement(set2)).toContain(o4);
+      expect(set1.complement(set2)).not.toContain(o4);
       
-      expect(set1.complement([o2, o3, o4])).not.toContain(o1);
+      expect(set1.complement([o2, o3, o4])).toContain(o1);
       expect(set1.complement([o2, o3, o4])).not.toContain(o2);
       expect(set1.complement([o2, o3, o4])).not.toContain(o3);
-      expect(set1.complement([o2, o3, o4])).toContain(o4);
+      expect(set1.complement([o2, o3, o4])).not.toContain(o4);
     });
 
     it('can determine set equivalence', function() {

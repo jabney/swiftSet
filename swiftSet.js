@@ -241,11 +241,11 @@ Set.prototype = {
     });
   },
 
-  // Relative complement. The set of items from 'b' except where
-  // the value is also in 'a' (b minus a).
+  // Relative complement. The set of items from 'a' except where
+  // the value is also in 'b' (a minus b).
   complement: function(b) {
     return this.process(b, function(count) {
-      return count == 2;
+      return count == 1;
     });
   },
 
@@ -327,12 +327,12 @@ Set.difference = function(a, b) {
   });
 };
 
-// Relative complement. Items from 'b' which are
-// not also in 'a'.
+// Relative complement. Items from 'a' which are
+// not also in 'b'.
 // Set.complement([1, 2, 2], [2, 2, 3]) => [3]
 Set.complement = function(a, b) {
   return Set.process(a, b, function(count) {
-    return count === 2;
+    return count === 1;
   });
 };
 
