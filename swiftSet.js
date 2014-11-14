@@ -7,7 +7,9 @@
 // Set, but it can also be used to record frequencies of discrete
 // values in arrays, strings, and objects; the Set object,
 // which is based upon Histogram, stores unique items and can
-// process even large arrays of items very fast. 
+// process even large arrays of items very fast.
+// ---------------------------------------------------------------
+// http://github.com/jabney/swiftSet
 // ---------------------------------------------------------------
 
 // ---------------------------------------------------------------
@@ -42,12 +44,7 @@ types.forEach(function(type, index) {
 
 // Encode a built-in type as a unique number.
 function encodeType(type) {
-  return codes[type];
-}
-
-// Decode a number to a string representing a built-in type.
-function decodeType(code) {
-  return types[code];
+  return codes[type] || type;
 }
 
 // Encode an object's type as a unique number.
