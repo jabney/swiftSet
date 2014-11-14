@@ -134,7 +134,7 @@ b.size(); // => 3
 a.union(b); // => [(o1), (o2), (o3), (o4)]
 ```
 
-**Note:** Since in the above case the objects are given ids of 1-4, they will have those keys in the histogram, and so will match numbers `1` through `4` as well as strings `"1"` through `"4"`. If you're mixing objects with numbers or strings in a set, you must make sure that the objects' id values will not interfere, unless you're intention is to allow an object with `id: 1` to be treated as the same value as numeric `1` and string `"1"`. See MIXED VALUES for information on how to make sure that numeric values and numeric strings can be treated as separate items in `Set`.
+**Note:** Since in the above case the objects are given ids of 1-4, they will have those keys in the histogram, and so will match numbers `1` through `4` as well as strings `"1"` through `"4"`. If you're mixing objects with numbers or strings in a set, you must make sure that the objects' id values will not interfere, unless you're intention is to allow an object with `id: 1` to be treated as the same value as numeric `1` and string `"1"`. See [Mixed Values](#mixed-values) for information on how to make sure that numeric values and numeric strings can be treated as separate items in `Set`.
 
 ```javascript
 // Determine how items with the same key are treated in a set.
@@ -149,7 +149,7 @@ set.has(o1); // => true
 ```
 
 #### The Object `key` Method
-This method requires that objects in the set all have a `key' property, and that the property is either a value or a function. This method is particularly helpful when overriding an object's toString method is not an option.
+This method requires that objects in the set all have a `key' property, and that the property is either a value or a function. This method is particularly useful when overriding an object's toString method is not an option.
 
 ```javascript
 
@@ -181,7 +181,7 @@ o3 = {id: 3, key: key},
 o4 = {id: 4, key: key},
 
 // Create two sets.
-a = new Set([o1, o2. o3]),
+a = new Set([o1, o2, o3]),
 b = new Set([o2, o3, o4]);
 
 // They should both have three items.
@@ -194,6 +194,8 @@ a.difference(b); // => [o1, o4]
 
 #### The Global Key Method
 This method requires that a key property or function is specified in `Set`'s constructor.
+
+### Mixed Values
 
 <!---
 ### About Keys
