@@ -16,7 +16,6 @@ Import `Set` from the swiftSet namespace into whichever context you want to use 
 
 ```javascript
 var 
-
 // Import swiftSet's Set class.
 Set = swiftSet.Set,
 ```
@@ -34,7 +33,6 @@ set = new Set([1, 2, 2, 3, 3, 3]); // (1, 2, 3);
 
 ```javascript
 var
-
 // Import Set
 Set = swiftSet.Set,
 
@@ -81,7 +79,6 @@ var newSet = set.copy(); // ('a', 'b', 'c')
 
 ```javascript
 var
-
 // Import.
 Set = swiftSet.Set,
 
@@ -126,9 +123,9 @@ function toStr() {
 var
 // Create objects with unique ids and add a reference to the toString function.
 o1 = {id: 1, toString: toStr},
-{id: 2, toString: toStr},
-{id: 3, toString: toStr},
-{id: 4, toString: toStr},
+o2 = {id: 2, toString: toStr},
+o3 = {id: 3, toString: toStr},
+o4 = {id: 4, toString: toStr},
 
 // Create two sets.
 a = new Set([o1, o2, o2, o3, o3, o3]),
