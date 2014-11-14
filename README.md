@@ -1,12 +1,12 @@
 swiftSet.js
 ===========
 
-swiftSet.js provides a `Set` data type for storing unique values and performing basic set operations _swiftly_. It also includes a discrete-value `Histogram` class which is used as a backing object for `Set`, although it can also be used on its own. swiftSet can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
+swiftSet.js provides a javascript `Set` data type for storing unique values and performing basic set operations _swiftly_. It also includes a discrete-value `Histogram` class which is used as a backing object for `Set`, although it can also be used on its own. swiftSet can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
 
-# Set
+## Set
 This section describes how to get started using `Set` then describes its methods as well as how to work with objects and mixed values. **Note:** the order of items in a set is *undefined*.
 
-## Usage
+### Usage
 
 Include a reference to swiftSet.js in your project.
 
@@ -30,7 +30,7 @@ set = new Set().add(1, 2, 2, 3, 3, 3), // (1, 2, 3),
 set = new Set([1, 2, 2, 3, 3, 3]); // (1, 2, 3);
 ```
 
-### More
+#### More
 
 ```javascript
 var
@@ -76,7 +76,7 @@ set.items().forEach(function(item) {
 var newSet = set.copy(); // ('a', 'b', 'c')
 ```
 
-### Set Operations
+#### Set Operations
 `Set` supports five basic set operations: union, intersection, difference, complement, and equals. `difference` is the symmetric difference, and `complement` is the relative complement.
 
 ```javascript
@@ -110,10 +110,10 @@ a.equals([1, 2, 2, 3, 3]); // => true
 a.equals(b); // => false
 ```
 
-### Sets of Objects
+#### Sets of Objects
 Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness, to differentiate it from other objeces. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
 
-#### The `toString` Method
+##### The `toString` Method
 This method requires that the objects in the set all have a toString method which can return a unique identifier on the object.
 
 ```javascript
@@ -157,7 +157,7 @@ set.has(o1); // => true
 set.items() // => [1]
 ```
 
-#### The Object `key` Method
+##### The Object `key` Method
 This method requires that objects in the set each have a `key' property, and that the property is either a value or a function. This method is particularly useful when overriding an object's toString method is not an option, or when a set needs to contain [Mixed Values](#mixed-values) consisting of objects and numeric values and/or numeric strings.
 
 ```javascript
@@ -201,7 +201,7 @@ b.size(); // => 3
 a.difference(b); // => [o1, o4]
 ```
 
-#### The Global Key Method
+##### The Global Key Method
 This method requires that a `key` property or function is specified in `Set`'s constructor. The effective difference between this method and the [Object `key` Method](#object-key-method) is that when a global key is specified, it's expected that every item in the set will be an object with that property; whereas objects making use of the [Object `key` Method](#object-key-method) can be mixed with other values in the set. See [Mixed Values](#mixed-values) for more information.
 
 ```javascript
@@ -240,7 +240,7 @@ b.size(); // => 3
 a.intersection(b); // => [o2, o3]
 ```
 
-### Mixed Values
+#### Mixed Values
 
 The issue with mixing and matching numeric and string values is that the numeric value `1` and the string `"1"` both evaluate to `"1"` when used as a key in an object literal, which is used in `Set`'s underlying histogram. swiftSet gets around this limitation by providing functionality to give numeric values and numeric strings (or other types) a wrapper object which returns a unique key according to the type of value. Not 
 
@@ -292,7 +292,7 @@ set.items().map(function(item) {
 }); // => [1, '1', 2, '2', {key: 'o1'}, {key: 'o2'}]
 ```
 
-#### How the wrapper works
+##### How the wrapper works
 `Set.wrapObj()` creates a wrapper object with two properties: the original value of the item `item` and a `toString` method that encodes the value's type as part of a key.
 
 ```javascript
@@ -303,7 +303,7 @@ wrap(1); // => {item: 1, toString: function(){...}}
 
 In this instance toString returns a unique key with the value `(1:4)` which has the format `(value:typecode)`. `typecode` is a numeric value that represents a built-in type, in this case `Number`. If value was a string, such as `"1"`, then the returned key would be `(1:5)`. The numeric typecode is generated internally and its actual value is arbitrary; the important thing is that different types produce different typecodes, so that even for values which end up with the same key, such as `1` and `"1"`, end up encoding with different keys because they're of different types. For more insight into how the type is encoded, see the `swiftSet.js` code.
 
-#### Specify a custom `toString` method for the wrapper
+##### Specify a custom `toString` method for the wrapper
 If for some reason the wrapper's default `toString` method doesn't meet your needs, such as for some type of custom object, a custom `toString` method can be specified in the call to `Set.wrapObj()`.
 
 ```javascript
