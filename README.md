@@ -194,7 +194,7 @@ a.difference(b); // => [o1, o4]
 ```
 
 #### The Global Key Method
-This method requires that a `key` property or function is specified in `Set`'s constructor. The effective difference between this method and the [Object `key` Method](#object-key-method) is that when a global key is specified it's expected that every item in the set will be an object with that property. Whereas with the [Object `key` Method](#object-key-method) objects with a `key` can be mixed with other values in the set. See [Mixed Values](#mixed-values).
+This method requires that a `key` property or function is specified in `Set`'s constructor. The effective difference between this method and the [Object `key` Method](#object-key-method) is that when a global key is specified, it's expected that every item in the set will be an object with that property; whereas objects making use of the [Object `key` Method](#object-key-method) can be mixed with other values in the set. See [Mixed Values](#mixed-values) for more information.
 
 ```javascript
 
