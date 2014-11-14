@@ -72,6 +72,32 @@ set.items().forEach(function(item) {
 var newSet = set.copy(); // ('a', 'b', 'c')
 ```
 
+### Set Operations
+`Set` supports five basic set operations: union, intersection, difference, complement, and equals. `difference` is the symmetric difference, and `complement` is the relative complement.
+
+```javascript
+var Set = swiftSet.Set;
+
+var a = new Set([1, 2, 3]),
+b = new Set([2, 3, 4]);
+
+// Union A &cup; B joins two sets together.
+a.union([2, 3, 4]); // => [1, 2, 3, 4]
+a.union(b); // => [1, 2, 3, 4]
+
+// Intersection A &cap; B returns elements common to both sets.
+a.intersection([2, 3, 4]); // => [2, 3]
+a.intersection(b); // => [2, 3]
+
+// Difference A &delta; B returns items not common to both sets.
+a.difference([2, 3, 4]); // => [1, 4]
+a.difference(b); // => [1, 4]
+
+// Complement B \ A returns elements in B that are not also in A.
+a.complement([2, 3, 4]); // => [4]
+a.complement(b); // => [4];
+```
+
 <!---
 ### Sets of objects
 ```javascript
