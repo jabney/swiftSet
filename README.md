@@ -85,7 +85,7 @@ b = new Set([2, 3, 4]);
 a.union([2, 3, 4]); // => [1, 2, 3, 4]
 a.union(b); // => [1, 2, 3, 4]
 
-// Intersection A &cap; B returns elements common to both sets.
+// Intersection A &#8745; B returns elements common to both sets.
 a.intersection([2, 3, 4]); // => [2, 3]
 a.intersection(b); // => [2, 3]
 
@@ -93,9 +93,13 @@ a.intersection(b); // => [2, 3]
 a.difference([2, 3, 4]); // => [1, 4]
 a.difference(b); // => [1, 4]
 
-// Complement B \ A returns elements in B that are not also in A.
-a.complement([2, 3, 4]); // => [4]
-a.complement(b); // => [4];
+// Complement A \ B returns elements in A that are not also in B (A - B).
+a.complement([2, 3, 4]); // => [1]
+a.complement(b); // => [1];
+
+// Equals A = B determines set equality.
+a.equals([1, 2, 2, 3, 3]); // => true
+a.equals(b); // => false
 ```
 
 <!---
