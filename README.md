@@ -149,7 +149,7 @@ set.has(o1); // => true
 ```
 
 #### The Object `key` Method
-This method requires that objects in the set all have a `key' property, and that the property is either a value or a function.
+This method requires that objects in the set all have a `key' property, and that the property is either a value or a function. This method is particularly helpful when overriding an object's toString method is not an option.
 
 ```javascript
 
@@ -160,8 +160,8 @@ o3 = {key: 3},
 o4 = {key: 4},
 
 // Create two sets.
-a = new Set(o1, o2, o3),
-b = new Set(o2, o3, o4);
+a = new Set([o1, o2, o3]),
+b = new Set([o2, o3, o4]);
 
 // They should both have three items.
 a.size(); // => 3
@@ -194,6 +194,7 @@ a.difference(b); // => [o1, o4]
 
 #### The Global Key Method
 This method requires that a key property or function is specified in `Set`'s constructor.
+
 <!---
 ### About Keys
 ```javascript
