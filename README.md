@@ -103,11 +103,98 @@ a.equals([1, 2, 2, 3, 3]); // => true
 a.equals(b); // => false
 ```
 
-<!---
-### Sets of objects
+### Sets of Objects
+Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness, to differentiate it from other objeces. This is often some sort if ID value or unique identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
+
+#### The `toString` Method
+This method requires that the objects in the set all have a toString method which can return a unique identifier on the object.
+
 ```javascript
 
+// Create a toString function that returns an object id.
+function toStr() {
+  return this.id;
+}
+
+// Create objects with unique ids and add a reference to the toString function.
+var o1 = {id: 1, toString: toStr},
+{id: 2, toString: toStr},
+{id: 3, toString: toStr},
+{id: 4, toString: toStr},
+
+// Create two sets.
+a = new Set([o1, o2, o2, o3, o3, o3]),
+b = new Set([o2, o3, o4]);
+
+// They should each have three items.
+a.size(); // => 3
+b.size(); // => 3
+
+// Perform an operation.
+a.union(b); // => [(o1), (o2), (o3), (o4)]
 ```
+
+**Note:** Since in the above case the objects are given ids of 1-4, they will have those keys in the histogram, and so will match numbers `1` through `4` as well as strings `"1"` through `"4"`. If you're mixing objects with numbers or strings in a set, you must make sure that the objects' id values will not interfere, unless you're intention is to allow an object with `id: 1` to be treated as the same value as numeric `1` and string `"1"`. See MIXED VALUES for information on how to make sure that numeric values and numeric strings can be treated as separate items in `Set`.
+
+```javascript
+// Determine how items with the same key are treated in a set.
+var o1 = {id: 1, toString: function() { return this.id; }},
+set = new Set([1, "1", o1]);
+
+// This set will only have one item.
+set.size(); // => 1
+set.has(1); // => true
+set.has("1"); // => true
+set.has(o1); // => true
+```
+
+#### The Object `key` Method
+This method requires that objects in the set all have a `key' property, and that the property is either a value or a function.
+
+```javascript
+
+// Create objects with a value key.
+var o1 = {key: 1},
+o2 = {key: 2},
+o3 = {key: 3},
+o4 = {key: 4},
+
+// Create two sets.
+a = new Set(o1, o2, o3),
+b = new Set(o2, o3, o4);
+
+// They should both have three items.
+a.size(); // => 3
+b.size(); // => 3
+
+// Perform an operation.
+a.intersection(b); // => [o2, o3]
+
+// Create a function to be used as a key retriever.
+function key() {
+  return this.id;  
+}
+
+var o1 = {id: 1, key: key},
+o2 = {id: 2, key: key},
+o3 = {id: 3, key: key},
+o4 = {id: 4, key: key},
+
+// Create two sets.
+a = new Set([o1, o2. o3]),
+b = new Set([o2, o3, o4]);
+
+// They should both have three items.
+a.size(); // => 3
+b.size(); // => 3
+
+// Perform an operation.
+a.difference(b); // => [o1, o4]
+```
+
+#### The Global Key Method
+This method requires that a key property or function is specified in `Set`'s constructor.
+<!---
 ### About Keys
 ```javascript
 
