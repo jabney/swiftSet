@@ -128,7 +128,7 @@ a.equals(b); // => false
 Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness, to differentiate it from other objects. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
 
 ##### The `toString` Method
-This method requires that the objects in the set all have a toString method which can return a unique identifier on the object.
+This method requires that objects in the set have a `toString` method which can return a unique identifier for the object.
 
 ```javascript
 var
@@ -179,7 +179,7 @@ set.items() // => [1], this could also be ["1"] or [o1].
 ```
 
 ##### The Object `key` Method
-This method requires that objects in the set each have a `key` property, and that the property is either a value or a function. This method is particularly useful when overriding an object's toString method is not an option, or when a set needs to contain [Mixed Values](#mixed-values) consisting of objects and numeric values and/or numeric strings.
+This method requires that objects in the set each have a `key` property, and that the property is either a value or a function. This method is particularly useful when overriding an object's `toString` method is not an option, or when a set needs to contain [Mixed Values](#mixed-values) consisting of objects and numeric values and/or numeric strings.
 
 ```javascript
 var
@@ -394,7 +394,7 @@ Set.equals(a, b); // => false
 Set.equals(a, [1, 2, 2, 3]); // => true
 ```
 
-Objects can be used with these operations as long as they have their own toString method, or are wrapped. There are no other custom key options that work for values used with these static methods.
+Objects can be used with these operations as long as they have their own `toString` method, or are wrapped. There are no other custom key options that work for values used with these static methods.
 
 ```javascript
 var
@@ -496,7 +496,7 @@ set = new Set([1, 1, 2, 2, 2, 3]); // (1, 2, 3)
 
 There's no interface in `Set` that exposes the structure of the histogram. If you wish to make use of this type of data, construct a `Histogram` object, which is available with `swiftSet`. See the [Histogram](#histogram) class documentation below.
 
-Set operations build two histograms, one to represet each set of values, after which both histograms are _normalized_ and _merged_. The first set `a` gets its histogram normalized to `1` and the second set `b` gets its values normalized to `2`. This destroys the information about the composition of the original array but it creates a new layer of information about the members of each set, their similarities, and their differences.
+Set operations build two histograms, one for each set of items, after which both histograms are _normalized_ and _merged_. The first set `a` gets its histogram normalized to `1` and the second set `b` gets its values normalized to `2`. This destroys the information about the composition of the original arrays but it creates a new layer of information about the members of each set, their similarities, and their differences, such that although the arrays' original composition information is lost, both sets `a` and `b` could be individually recovered from the data in the merged histogram.
 
 ```javascript
 // Two histograms are created for each set during an operation. Then they
@@ -518,7 +518,7 @@ a.complement(b); // => [1]
 
 // Histograms before normalization.
 //
-//         a                       b
+//          a                      b
 //   |                      |
 // 3 |     ***            3 |         ***
 // 2 | *** ***            2 | ***     ***
@@ -529,7 +529,7 @@ a.complement(b); // => [1]
 //
 // Histograms after normalization (`a` is normalized to `1` and `b` to `2`).
 //
-//         a                       b
+//          a                      b
 //   |                      |
 // 3 |                    3 |
 // 2 |                    2 | *** *** ***
@@ -557,7 +557,7 @@ When the histograms are additively merged, a picture of the two sets' properties
 //
 ```
 
-This information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently from the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
+This information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently than the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
 
 When performing a `union` all frequencies are valid, so all the items are returned in the output.
 
@@ -591,7 +591,7 @@ a.equals(b); // => true
 
 // Histograms after normalization but before merge.
 //
-//         a                       b
+//          a                      b
 //   |                      |
 // 3 |                    3 |
 // 2 |                    2 | *** *** ***
