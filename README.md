@@ -557,7 +557,7 @@ When the histograms are additively merged, a picture of the two sets' properties
 //
 ```
 
-That information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently from the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
+This information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently from the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
 
 When performing a `union` all frequencies are valid, so all the items are returned in the output.
 
@@ -611,7 +611,7 @@ a.equals(b); // => true
 // a |     1    |    2    |    3    |
 //
 ```
-Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of one and a `max` frequency of three, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both three.
+Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of `1` and a `max` frequency of `3`, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both three.
 
 ## Histogram
 
