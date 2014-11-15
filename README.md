@@ -464,7 +464,7 @@ new Set(['a', 'b', 'c']).remove('c'); // =? ['a', 'b']
 ```
 
 ### How `Set` uses `Histogram` For Fast Operations
-As the name implies, `swiftSet.js` is _swift_. Operations are fast even for large arrays. `Set` makes use of discrete-value histograms and merges them together to get a complete picture of the relation of one set to another. 
+As the name implies, `swiftSet.js` is _swift_. Operations are fast even for large arrays. `Set` operations make use of two discrete-value histograms and merges them together to get a complete picture of the relation of one set to another. 
 
 Here's what a histogram constructed from an array of values looks like conceptually:
 
@@ -561,13 +561,13 @@ That information is sufficient to perform all five included set operations, alth
 When performing a `union` all frequencies are valid, so all the items are returned in the output.
 `return true` `=>` `[1, 2, 3, 4]`
 
-When performing an `intersection` only items with a frequency of three are returned in the output. `[2, 3]`
+When performing an `intersection` only items with a frequency of three are returned in the output.
 `return freq === 3` `=>` `[2, 3]`
 
-When performing a `difference` only items with frequencies less than three are returned. `[1, 4]`
+When performing a `difference` only items with frequencies less than three are returned.
 `return freq < 3` `=>` `[1, 4]`
 
-When performing a `complement` only items with frequencies of one are returned. `[1]`
+When performing a `complement` only items with frequencies of one are returned.
 `return freq === 1` `=>` `[1]`
 
 The `equals` operation returns true if the `min` frequency and the `max' frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it 
