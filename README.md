@@ -337,12 +337,12 @@ In the first instance `toString` returns a key with the value `(1:4)` which has 
 
 In the second instance `toString` returns a key with the value `(1:5)`. The numeric code `5` represents the built-in type `String`.
 
-**Note:** The numeric typecode is generated internally and its actual value is arbitrary. The important thing is that different types produce different typecodes, so that even for values which end up with the same key, such as `1` and `"1"`, end up encoding with different keys because they're of different types. For more insight into how the type is encoded, see the `swiftSet.js` code.
+**Note:** The numeric typecode is generated internally and its actual value is arbitrary. The important thing is that different types produce different typecodes, so that even values which have the same key, such as `1` and `"1"`, end up encoding with different keys in the wrapper because they're of different types. For more insight into how the type is encoded, see the `swiftSet.js` code.
 
-In the third instance `toString` returns a key with the value `([object Object]:6)`. The numeric code represents the built-in type `Object`. However this key is useless: _every object literal will produce this exact key_. If you want to wrap object literals, you must specify a custom `toString` method for the wrapper. See [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper) below.
+In the third instance `toString` returns a key with the value `([object Object]:6)`. The numeric code `6` represents the built-in type `Object`. However this key is useless: _every object literal will produce this exact key_. If you want to wrap object literals, you must specify a custom `toString` method for the wrapper. See [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper) below.
 
 ##### Specify a custom `toString` method for the wrapper
-If for some reason the wrapper's default `toString` method doesn't meet your needs, such as for some type of custom object, a custom `toString` method can be specified in the call to `Set.wrapObj()`.
+If for some reason the wrapper's default `toString` method doesn't meet your needs, such as for some type of custom object, a `toString` method can be specified in the call to `Set.wrapObj()`.
 
 ```javascript
 var
@@ -371,6 +371,7 @@ set.has(wrap(items[2])); // => true
 // Get an array of unwrapped items.
 set.unwrap(); // => [{id: 1}, {id: 2}, {id: 3}] 
 ```
+In the above example the items have the keys `"id1"`, `"id2"` and `"id3"` as supplied by the specified `toString` function.
 
 #### Static Set Operations
 swiftSet.js provides class-level set operations, or _static methods_ for performing `union`, `intersection`, `difference`, `complement`, and `equals` without the need to instantiate a `Set` object. These are low overhead implementations and will typically execute faster than their `Set.prototype` equivalents. However they maintain no state; no persistent objects need to be created, and they operate on two arrays of values. 
@@ -467,8 +468,146 @@ As the name implies, `swiftSet.js` is _swift_. Operations are fast even for larg
 
 Here's what a histogram constructed from an array of values looks like conceptually:
 
+```javascript
+var
+// Import.
+Set = swiftSet.Set,
 
- 
+// Create a set.
+set = new Set([1, 1, 2, 2, 2, 3]); // (1, 2, 3)
+
+// Internally the set's histogram looks something like this:
+// 
+//   |
+// 3 |     ***
+// 2 | *** ***
+// 1 | *** *** ***
+// --------------------
+//   |  1 | 2 | 3 |
+// 
+// The `x` axis represents the values in the set, and the `y` axis represents
+// the frequency of that value's occurrence in the original array. Value 1 has
+// two entries, value 2 has three, and 3 has one entry. This reflects the
+// composition original array [1, 1, 2, 2, 2, 3] although the order of items
+// is undefined. The internal histogram contains enough information to rebuild
+// the original array except for the order of its values.
+```
+
+There's no interface in `Set` that exposes the structure of the histogram. If you wish to make use of this type of data, construct a `Histogram` object, which is available with `swiftSet`. See the [Histogram](#histogram) class documentation below.
+
+Set operations build two histograms, one to represet each set of values, after which both histograms are _normalized_ and _merged_. The first set `a` gets its histogram normalized to `1` and the second set `b` gets its values normalized to `2`. This destroys the information about the original composition of the array but it creates a new layer of information about the members of each set, their similarities, and their differences.
+
+```javascript
+// Two histograms are created for each set during an operation. Then they
+// are normalized and merged.
+//
+var
+// Import.
+Set = swiftSet.Set,
+
+// Create two sets.
+a = new Set([1, 1, 2, 2, 2, 3]), // (1, 2, 3)
+b = new Set([2, 2, 3, 4, 4, 4]); // (2, 3, 4)
+
+// Perform any operation.
+a.union(b); // => [1, 2, 3, 4]
+a.intersection(b); // => [2, 3]
+a.difference(b); // => [1, 4]
+a.complement(b); // => [1]
+
+// Histograms before normalization.
+//
+//         a                       b
+//   |                      |
+// 3 |     ***            3 |         ***
+// 2 | *** ***            2 | ***     ***
+// 1 | *** *** ***        1 | *** *** ***
+// -----------------      -----------------
+// a |  1 | 2 | 3 |       b |  2 | 3 | 4 |
+// 
+//
+// Histograms after normalization (`a` is normalized to `1` and `b` to `2`).
+//
+//         a                       b
+//   |                      |
+// 3 |                    3 |
+// 2 |                    2 | *** *** ***
+// 1 | *** *** ***        1 | *** *** ***
+// -----------------      -----------------
+// a |  1 | 2 | 3 |       b |  2 | 3 | 4 |
+//
+```
+
+When the histograms are additively merged, a picture of the two sets' properties emerges. Items exclusively in set `a` have a frequency value of `1`. Items exclusively in set `b` have a frequency value of `2`. Items common to both sets have a frequency value of `3`. Continuing from the previous example,
+
+```javascript
+// The merged histograms during a set operation combine additively
+// to make a single histogram.
+// 
+//                       a+b
+//   |
+// 3 |           ********* *********           --- max
+// 2 |           ********* ********* *********
+// 1 | ********* ********* ********* ********* --- min
+// --------------------------------------------
+//   |     1    |    2    |    3    |    4    |
+//   | items in |      items in     |items in |
+//   |     a    |      both sets    |    b    |
+//
+```
+
+That information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently from the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
+
+When performing a `union` all frequencies are valid, so all the items are returned in the output.
+`return true` `=>` `[1, 2, 3, 4]`
+
+When performing an `intersection` only items with a frequency of three are returned in the output. `[2, 3]`
+`return freq === 3` `=>` `[2, 3]`
+
+When performing a `difference` only items with frequencies less than three are returned. `[1, 4]`
+`return freq < 3` `=>` `[1, 4]`
+
+When performing a `complement` only items with frequencies of one are returned. `[1]`
+`return freq === 1` `=>` `[1]`
+
+The `equals` operation returns true if the `min` frequency and the `max' frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it 
+
+```javascript
+var
+// Import.
+Set = swiftSet.Set,
+
+// Create two equivalent sets.
+a = new Set([1, 1, 2, 3, 3, 3]), (1, 2, 3)
+b = new Set([1, 2, 2, 2, 3, 3]), (1, 2, 3)
+
+// Perform equals operation.
+a.equals(b); // => true
+
+// Histograms after normalization but before merge.
+//
+//         a                       b
+//   |                      |
+// 3 |                    3 |
+// 2 |                    2 | *** *** ***
+// 1 | *** *** ***        1 | *** *** ***
+// -----------------      -----------------
+// a |  1 | 2 | 3 |       b |  1 | 2 | 3 |
+//
+//
+// Histogram after merge. 
+//
+//                  a+b
+//   |
+// 3 | ********* ********* ********* --- min, max
+// 2 | ********* ********* *********
+// 1 | ********* ********* *********
+// ----------------------------------
+// a |     1    |    2    |    3    |
+//
+```
+Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of one and a `max` frequency of three, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both three.
+
 <!---
 ### About Keys
 ```javascript
