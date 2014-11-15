@@ -486,17 +486,17 @@ set = new Set([1, 1, 2, 2, 2, 3]); // (1, 2, 3)
 // --------------------
 //   |  1 | 2 | 3 |
 // 
-// The `x` axis represents the values in the set, and the `y` axis represents
-// the frequency of that value's occurrence in the original array. Value 1 has
+// The `x` axis represents the items in the set, and the `y` axis represents
+// the frequency of that item's occurrence in the original array. Value 1 has
 // two entries, value 2 has three, and 3 has one entry. This reflects the
 // composition original array [1, 1, 2, 2, 2, 3] although the order of items
 // is undefined. The internal histogram contains enough information to rebuild
-// the original array except for the order of its values.
+// the original array except for the order of its items.
 ```
 
 There's no interface in `Set` that exposes the structure of the histogram. If you wish to make use of this type of data, construct a `Histogram` object, which is available with `swiftSet`. See the [Histogram](#histogram) class documentation below.
 
-Set operations build two histograms, one to represet each set of values, after which both histograms are _normalized_ and _merged_. The first set `a` gets its histogram normalized to `1` and the second set `b` gets its values normalized to `2`. This destroys the information about the original composition of the array but it creates a new layer of information about the members of each set, their similarities, and their differences.
+Set operations build two histograms, one to represet each set of values, after which both histograms are _normalized_ and _merged_. The first set `a` gets its histogram normalized to `1` and the second set `b` gets its values normalized to `2`. This destroys the information about the composition of the original array but it creates a new layer of information about the members of each set, their similarities, and their differences.
 
 ```javascript
 // Two histograms are created for each set during an operation. Then they
@@ -571,11 +571,11 @@ When performing a `difference` only items with frequencies less than three are r
 
 `return freq < 3` `=>` `[1, 4]`
 
-When performing a `complement` only items with frequencies of one are returned.
+When performing a `complement` only items with a frequency of one are returned.
 
 `return freq === 1` `=>` `[1]`
 
-The `equals` operation returns true if the `min` frequency and the `max' frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it analyzes the merged histogram to determine `min` and `max` values.
+The `equals` operation returns true if the `min` frequency and the `max` frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it analyzes the merged histogram to determine `min` and `max` frequencies of the items.
 
 ```javascript
 var
