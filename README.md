@@ -12,8 +12,8 @@ Contents
       + [The Object `key` Method](#the-object-key-method)
       + [The Global Key Method](#the-global-key-method)
     + [Mixed Values](#mixed-values)
-      + [How the wrapper works](#how-the-wrapper-works)
-      + [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper)
+      + [How The Wrapper Works](#how-the-wrapper-works)
+      + [Specify A Custom `tostring` Method For The Wrapper](#specify-a-custom-tostring-method-for-the-wrapper)
     + [Static Set Operations](#static-set-operations)
   + [How `Set` uses `Histogram` For Fast Operations](#how-set-uses-histogram-for-fast-operations)
   + [Extend Set With Custom Operations](#extend-set-with-custom-operations)
@@ -22,11 +22,11 @@ Contents
 ## Set
 This section describes how to get started using `Set` then describes its methods as well as how to work with objects and mixed values.
 
-**Note:** the order of items in a set is *undefined*.
+**Note:** the order of items in a set is _undefined_.
 
 ### Usage
 
-Include a reference to swiftSet.js in your project.
+Include a reference to `swiftSet.js` in your project.
 
 `<script type="text/javascript" src="swiftSet.js"></script>`
 
@@ -126,7 +126,7 @@ a.equals(b); // => false
 ```
 
 #### Sets of Objects
-Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness, to differentiate it from other objects. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
+Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness in order to differentiate it from other objects. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
 
 ##### The `toString` Method
 This method requires that objects in the set have a `toString` method which can return a unique identifier for the object.
@@ -159,7 +159,7 @@ b.size(); // => 3
 a.union(b); // => [o1, o2, o3, o4]
 ```
 
-**Note:** Since in the above case the objects are given ids of 1-4, they will have those keys in `Set`'s internal histogram, and so will match numbers `1` through `4` as well as strings `"1"` through `"4"`. If you're mixing objects with numbers or strings in a set, you must make sure that the objects' id values will not interfere, unless you're intention is to allow an object with `id: 1` to be treated as the same value as numeric `1` and string `"1"`. However, most likely not what you want. See [Mixed Values](#mixed-values) for information on how to make sure that numeric values and numeric strings can be treated as separate items in `Set`.
+**Note:** Since in the above case the objects are given ids of 1-4, they will have those keys in `Set`'s internal histogram, and so will match numbers `1` through `4` as well as strings `"1"` through `"4"`. If you're mixing objects with numbers or strings in a set, you must make sure that the objects' id values will not interfere, unless you're intention is to allow an object with `id: 1` to be treated as the same value as numeric `1` and string `"1"`. However, most likely that's not what you want. See [Mixed Values](#mixed-values) for information on how to make sure that numeric values and numeric strings can be treated as separate items in `Set`.
 
 ```javascript
 var
@@ -320,7 +320,7 @@ set.items().map(function(item) {
 }); // => [1, '1', 2, '2', {key: 'o1'}, {key: 'o2'}]
 ```
 
-##### How the wrapper works
+##### How The Wrapper Works
 `Set.wrapObj()` creates a wrapper object with two properties: an `item` property which hods the original value of the item and a `toString` method that encodes the value's type as part of its key.
 
 ```javascript
@@ -343,7 +343,7 @@ In the second instance `toString` returns a key with the value `(1:5)`. The nume
 
 In the third instance `toString` returns a key with the value `([object Object]:6)`. The numeric code `6` represents the built-in type `Object`. However this key is useless: _every object literal will produce this exact key_. If you want to wrap object literals, you must specify a custom `toString` method for the wrapper. See [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper) below.
 
-##### Specify a custom `toString` method for the wrapper
+##### Specify A Custom `tostring` Method For The Wrapper
 If for some reason the wrapper's default `toString` method doesn't meet your needs, such as for some type of custom object, a `toString` method can be specified in the call to `Set.wrapObj()`.
 
 ```javascript
@@ -497,7 +497,7 @@ set = new Set([1, 1, 2, 2, 2, 3]); // (1, 2, 3)
 
 There's no interface in `Set` that exposes the structure of the histogram. If you wish to make use of this type of data, construct a `Histogram` object, which is available with `swiftSet`. See the [Histogram](#histogram) class documentation below.
 
-Set operations build two histograms, one for each set of items, after which both histograms are _normalized_ and _merged_. The first set `a` gets its histogram normalized to `1` and the second set `b` gets its values normalized to `2`. This destroys the information about the composition of the original arrays but it creates a new layer of information about the members of each set, their similarities, and their differences, such that although the arrays' original composition information is lost, both sets `a` and `b` could be individually recovered from the data in the merged histogram.
+Set operations build two histograms, one for each set of items, after which both histograms are _normalized_ and _merged_. The first set `a` gets its histogram normalized to `1` and the second set `b` gets its values normalized to `2`. This destroys the information about the composition of the original arrays but it creates a new layer of information about the members of each set, their similarities, and their differences, such that although the arrays' original composition information is lost, both sets `a` and `b` could be individually reconstructed from the data in the merged histogram.
 
 ```javascript
 // Two histograms are created for each set during an operation. Then they
@@ -563,7 +563,7 @@ This information is sufficient to perform all five included set operations, alth
 Here's a snipet from `swiftSet.js` that shows the `difference` operation calling into the `process` method, which iterates over the merged histogram and calls back to the given evaluator to determine if an item passed the test.
 
 ```javascript
-// The inner loop of Set's process method, which calls the evaluator.
+// The inner loop of Set's process method calls the evaluator.
 
 // Merge histogram b into a.
 a.merge(b);
@@ -637,14 +637,14 @@ a.equals(b); // => true
 // 2 | ********* ********* *********
 // 1 | ********* ********* *********
 // ----------------------------------
-// a |     1    |    2    |    3    |
+//   |     1    |    2    |    3    |
 //
 ```
 Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of `1` and a `max` frequency of `3`, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both `3`.
 
-#### Extend set with custom operations
+### Extend `Set` With Custom Operations
 
-You can extend `Set`'s operations in its `prototype` by copying an existing operation, changing its name, and changing the pass fail condition in the evaluator:
+You can extend `Set`'s operations in its `prototype` by copying an existing operation, changing its name, and changing the pass/fail condition in the evaluator:
 
 ```javascript
 var
