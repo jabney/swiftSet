@@ -560,15 +560,19 @@ When the histograms are additively merged, a picture of the two sets' properties
 That information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently from the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
 
 When performing a `union` all frequencies are valid, so all the items are returned in the output.
+
 `return true` `=>` `[1, 2, 3, 4]`
 
 When performing an `intersection` only items with a frequency of three are returned in the output.
+
 `return freq === 3` `=>` `[2, 3]`
 
 When performing a `difference` only items with frequencies less than three are returned.
+
 `return freq < 3` `=>` `[1, 4]`
 
 When performing a `complement` only items with frequencies of one are returned.
+
 `return freq === 1` `=>` `[1]`
 
 The `equals` operation returns true if the `min` frequency and the `max' frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it analyzes the merged histogram to determine `min` and `max` values.
