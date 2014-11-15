@@ -16,6 +16,7 @@ Contents
       + [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper)
     + [Static Set Operations](#static-set-operations)
   + [How `Set` uses `Histogram` For Fast Operations](#how-set-uses-histogram-for-fast-operations)
+  + [Extend Set With Custom Operations](#extend-set-with-custom-operations)
 + [Histogram](#histogram)
 
 ## Set
@@ -641,7 +642,7 @@ a.equals(b); // => true
 ```
 Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of `1` and a `max` frequency of `3`, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both `3`.
 
-#### Extend set with a custom operation
+#### Extend set with custom operations
 
 You can extend `Set`'s operations in its `prototype` by copying an existing operation, changing its name, and changing the pass fail condition in the evaluator:
 
