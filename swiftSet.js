@@ -263,12 +263,16 @@ Set.prototype = {
 // perfromed on two given arrays. They are class methods,
 // can be called directly and do not requre a Set object to be 
 // specifically constructed, and are generally faster than their
-// Set.prototye equivalents (except perhaps for large arrays).
+// Set.prototye equivalents (except perhaps for very large arrays).
 //
 // Example usage: Set.intersection([1, 2, 3], [2, 3, 4]) => [2, 3]
 //
 // Arrays of objects can be used as well, but each object must
-// have a toString() method which returns a unique value.
+// have a toString() method which returns a unique value, or the
+// objects must be wrapped. 
+//
+// This also shows the core set operations algorithm without any of
+// the overhead associated with constructing and managing a Set.
 // ---------------------------------------------------------------
 
 // Processes a histogram consructed from two arrays, 'a' and 'b'.
