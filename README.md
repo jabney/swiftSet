@@ -92,7 +92,7 @@ var newSet = set.copy(); // ('a', 'b', 'c')
 ```
 
 #### Set Operations
-`Set` supports five basic set operations: union, intersection, difference, complement, and equals. `difference` is the symmetric difference, and `complement` is the relative complement.
+`Set` supports five basic set operations: union, intersection, difference, complement, and equals. `difference` is the symmetric difference, and `complement` is the relative complement. Set operations produce no side effects, so no state in the calling set is affected.
 
 ```javascript
 var
@@ -646,14 +646,41 @@ Comparing the above with the previous merged histogram example, you can see that
 You can extend `Set`'s operations in its `prototype` by copying an existing operation, changing its name, and changing the pass fail condition in the evaluator:
 
 ```javascript
-// Create a reverse complement, B\A, which returns the items from b
-// that are not also in a.
-rcomplement: function(b) {
+var
+// Import.
+Set = swiftSet.Set,
+a = new Set([1, 2, 3]),
+b = new Set([2, 3, 4]);
+
+// Create a reverse complement operation, B\A, which returns 
+// the items from b that are not also in a.
+Set.prototype.rcomplement = function(b) {
   return this.process(b, function(freq) {
     // Pass/fail condition.
     return freq === 2;
   });
-},
+};
+
+// Perform the rcomplement operation.
+a.rcomplement(b); // => [4]
+
+// Create a set reconstructor, which rebuilds both sets from the
+// information in the merged histogram.
+Set.prototype.reconstruct = function(b) {
+  // When the process method is called without an evaluator,
+  // it returns the merged histogram.
+  var hist = this.process(b), out = {a:[], b:[]};
+  hist.each(function(item, freq, key) {
+    freq === 3 && out.a.push(item) && out.b.push(item); // Members of both sets.
+    freq === 1 && out.a.push(item); // Members of set a.
+    freq === 2 && out.b.push(item); // Members of set b.
+  });
+  return out;
+};
+
+// Not a particularly useful operation, but it demonstrates that
+// both sets can be reconstructed from the merged histogram.
+a.reconstruct(b); // => {a:[1, 2, 3], b:[2, 3, 4]}
 ```
 ## Histogram
 
