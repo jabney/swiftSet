@@ -441,17 +441,6 @@ function Histogram(items, key) {
     return this;
   }
 
-  // Get a copy of the internal histogram object.
-  function get() {
-    var h = Object.create(null);
-    for (var key in hist) {
-      h[key] = Object.create(null);
-      h[key].item = hist[key].item;
-      h[key].count = hist[key].count;
-    }
-    return h;
-  }
-
   // Add multiple item to the histogram via an array of item.
   this.addItems = function(items) {
     items.forEach(function(item) {
