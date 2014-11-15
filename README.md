@@ -465,7 +465,7 @@ new Set(['a', 'b', 'c']).remove('c'); // =? ['a', 'b']
 ```
 
 ### How `Set` uses `Histogram` For Fast Operations
-As the name implies, `swiftSet.js` is _swift_. Operations are fast even for large arrays. `Set` operations make use of two discrete-value histograms and merges them together to get a complete picture of the relation of one set to another. 
+As the name implies, `swiftSet.js` is _swift_. Operations are fast even for large arrays. `Set` operations make use of two discrete-value histograms which are merged together to get a complete picture of one set's relation to the other. 
 
 Here's what a histogram constructed from an array of values looks like conceptually:
 
@@ -489,9 +489,9 @@ set = new Set([1, 1, 2, 2, 2, 3]); // (1, 2, 3)
 // The `x` axis represents the items in the set, and the `y` axis represents
 // the frequency of that item's occurrence in the original array. Value 1 has
 // two entries, value 2 has three, and 3 has one entry. This reflects the
-// composition original array [1, 1, 2, 2, 2, 3] although the order of items
-// is undefined. The internal histogram contains enough information to rebuild
-// the original array except for the order of its items.
+// composition of the original array [1, 1, 2, 2, 2, 3] although the order
+// of items is undefined. The internal histogram contains enough information
+// to rebuild the original array except for the order of its items.
 ```
 
 There's no interface in `Set` that exposes the structure of the histogram. If you wish to make use of this type of data, construct a `Histogram` object, which is available with `swiftSet`. See the [Histogram](#histogram) class documentation below.
@@ -539,11 +539,11 @@ a.complement(b); // => [1]
 //
 ```
 
-When the histograms are additively merged, a picture of the two sets' properties emerges. Items exclusively in set `a` have a frequency value of `1`. Items exclusively in set `b` have a frequency value of `2`. Items common to both sets have a frequency value of `3`. Continuing from the previous example,
+When the histograms are additively merged, a picture of the two sets' properties emerges. Items exclusively in set `a` have a frequency value of `1`. Items exclusively in set `b` have a frequency value of `2`. Items common to both sets add together to produce a frequency value of `3`. Continuing from the previous example,
 
 ```javascript
-// The merged histograms during a set operation combine additively
-// to make a single histogram.
+// The two normalized histograms during a set operation combine
+// additively to make a single merged histogram.
 // 
 //                       a+b
 //   |
@@ -559,22 +559,29 @@ When the histograms are additively merged, a picture of the two sets' properties
 
 This information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently than the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
 
-Here's a snipet that shows the `difference` operation from `Set` calling into the process method, which iterates over the merged histogram and calls back to the evaluator to determine if an item passed the test.
+Here's a snipet from `swiftSet.js` that shows the `difference` operation calling into the `process` method, which iterates over the merged histogram and calls back to the given evaluator to determine if an item passed the test.
 
 ```javascript
 // The inner loop of Set's process method, which calls the evaluator.
+
+// Merge histogram b into a.
 a.merge(b);
 if(evaluator) {
+  // Iterate a and build the output array.
   a.each(function(item, freq) {
     // The item gets added to the output if the evaluator passes.
     evaluator(freq) && out.push(item); 
   });
   return out;
-}
+} else {
+
+// ...
 
 // The difference method's evaluator gets called by the above code.
 difference: function(b) {
+  // Call the process method and supply the evaluator callback.
   return this.process(b, function(freq) {
+    // Pass/fail condition.
     return freq < 3;
   });
 },
@@ -596,7 +603,7 @@ When performing a `complement` only items with a frequency of one are returned.
 
 `return freq === 1` `=>` `[1]`
 
-The `equals` operation returns true if the `min` frequency and the `max` frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it analyzes the merged histogram to determine `min` and `max` frequencies of the items.
+The `equals` operation returns true if the `min` frequency and the `max` frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it analyzes the merged histogram to determine the `min` and `max` frequencies of the items.
 
 ```javascript
 var
@@ -632,8 +639,22 @@ a.equals(b); // => true
 // a |     1    |    2    |    3    |
 //
 ```
-Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of `1` and a `max` frequency of `3`, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both three.
+Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of `1` and a `max` frequency of `3`, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both `3`.
 
+#### Extend set with a custom operation
+
+You can extend `Set`'s operations in its `prototype` by copying an existing operation, changing its name, and changing the pass fail condition in the evaluator:
+
+```javascript
+// Create a reverse complement, B\A, which returns the items from b
+// that are not also in a.
+rcomplement: function(b) {
+  return this.process(b, function(freq) {
+    // Pass/fail condition.
+    return freq === 2;
+  });
+},
+```
 ## Histogram
 
 <!---
