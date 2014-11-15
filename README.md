@@ -571,7 +571,7 @@ When performing a `difference` only items with frequencies less than three are r
 When performing a `complement` only items with frequencies of one are returned.
 `return freq === 1` `=>` `[1]`
 
-The `equals` operation returns true if the `min` frequency and the `max' frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it 
+The `equals` operation returns true if the `min` frequency and the `max' frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it analyzes the merged histogram to determine `min` and `max` values.
 
 ```javascript
 var
