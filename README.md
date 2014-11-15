@@ -15,7 +15,8 @@ Contents
       + [How the wrapper works](#how-the-wrapper-works)
       + [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper)
     + [Static Set Operations](#static-set-operations)
-  [How `Set` uses `Histogram` For Fast Operations](#how-set-uses-histogram-for-fast-operations)
+  + [How `Set` uses `Histogram` For Fast Operations](#how-set-uses-histogram-for-fast-operations)
++ [Histogram](#histogram)
 
 ## Set
 This section describes how to get started using `Set` then describes its methods as well as how to work with objects and mixed values.
