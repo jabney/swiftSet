@@ -3,6 +3,18 @@ swiftSet.js
 
 swiftSet.js provides a javascript `Set` data type for storing unique values and performing basic set operations _swiftly_. It also includes a discrete-value `Histogram` class which is used as a backing object for `Set`, although it can also be used on its own. swiftSet can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
 
+Contents
++ [Set](#set)
+  + [Usage](#usage)
+    + [Set Operations](#set-operations)
+    + [Sets of Objects](#sets-of-objects)
+      + [The `toString` Method](#the-tostring-method)
+      + [The Object `key` Method](#the-object-key-method)
+      + [The Global Key Method](#the-global-key-method)
+    + [Mixed Values](#mixed-values)
+      + [How the wrapper works](#how-the-wrapper-works)
+      + [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper)
+      
 ## Set
 This section describes how to get started using `Set` then describes its methods as well as how to work with objects and mixed values. **Note:** the order of items in a set is *undefined*.
 
@@ -141,7 +153,7 @@ b.size(); // => 3
 a.union(b); // => [o1, o2, o3, o4]
 ```
 
-**Note:** Since in the above case the objects are given ids of 1-4, they will have those keys in `Set`'s internal histogram, and so will match numbers `1` through `4` as well as strings `"1"` through `"4"`. If you're mixing objects with numbers or strings in a set, you must make sure that the objects' id values will not interfere, unless you're intention is to allow an object with `id: 1` to be treated as the same value as numeric `1` and string `"1"`. See [Mixed Values](#mixed-values) for information on how to make sure that numeric values and numeric strings can be treated as separate items in `Set`.
+**Note:** Since in the above case the objects are given ids of 1-4, they will have those keys in `Set`'s internal histogram, and so will match numbers `1` through `4` as well as strings `"1"` through `"4"`. If you're mixing objects with numbers or strings in a set, you must make sure that the objects' id values will not interfere, unless you're intention is to allow an object with `id: 1` to be treated as the same value as numeric `1` and string `"1"`. However, most likely not what you want. See [Mixed Values](#mixed-values) for information on how to make sure that numeric values and numeric strings can be treated as separate items in `Set`.
 
 ```javascript
 var
@@ -312,7 +324,7 @@ var
 Set = swiftSet.Set,
 
 wrap = Set.wrapObj();
-wrap(1); // => {item: 1, toString: function(){...}}
+wrap(1); // => Wrapper {item: 1, toString: function(){...}}
 ```
 
 In this instance toString returns a unique key with the value `(1:4)` which has the format `(value:typecode)`. `typecode` is a numeric value that represents a built-in type, in this case `Number`. If value was a string, such as `"1"`, then the returned key would be `(1:5)`. The numeric typecode is generated internally and its actual value is arbitrary; the important thing is that different types produce different typecodes, so that even for values which end up with the same key, such as `1` and `"1"`, end up encoding with different keys because they're of different types. For more insight into how the type is encoded, see the `swiftSet.js` code.
