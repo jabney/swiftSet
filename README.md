@@ -1,7 +1,7 @@
 swiftSet.js
 ===========
 
-swiftSet.js provides a javascript `Set` data type for storing unique values and performing basic set operations _swiftly_. It also includes a discrete-value `Histogram` class which is used as a backing object for `Set`, although it can also be used on its own. swiftSet can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
+`swiftSet.js` provides a javascript `Set` data type for storing unique values and performing basic set operations _swiftly_. It also includes a discrete-value `Histogram` class which is used as a backing object for `Set`, although it can also be used on its own. `swiftSet.js` can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
 
 Contents
 + [Set](#set)
@@ -47,7 +47,7 @@ set = new Set().add(1, 2, 2, 3, 3, 3), // (1, 2, 3),
 set = new Set([1, 2, 2, 3, 3, 3]); // (1, 2, 3);
 ```
 
-#### More
+Add and remove items, determine set size, check if an item is in the set, retrieve an array representing the set's unique items, iterate over a set, and make a copy of the set object.
 
 ```javascript
 var
@@ -83,6 +83,7 @@ set.items(); // => ['a', 'b', 'c']
 set.each(function(item) {
   console.log(item); // 'a', 'b', 'c'
 });
+
 // ... or, since set.items() returns an array ...
 set.items().forEach(function(item) {
   console.log(item); // 'a', 'b', 'c'
@@ -411,7 +412,7 @@ b = [{id:2}, {id:3}, {id:4}].map(function(item) {
   return wrap(item);
 });
 
-// Pefrom some operations and unwrap the result.
+// Pefrom some operations and unwrap the results.
 
 Set.union(a, b).map(function(item) {
   return item.item;
@@ -433,36 +434,6 @@ Set.complement(a, b).map(function(item) {
 
 Set.equals(a, b); // => false
 Set.equals(a, [{id:1}, {id:2}, {id:3}]); // => true
-```
-
-There may be other situations where one of these methods comes in handy. 
-
-For instance, to remove duplicate items from an array, use `Set.union()`.
-
-```javascript
-var
-// Import.
-Set = swiftSet.Set;
-
-// Remove duplicate items from an array.
-Set.union([1, 1, 2, 2, 3, 3], []); // => [1, 2, 3]
-
-// The above is equivalent to this.
-new Set([1, 1, 2, 2, 3, 3]).items(); // => [1, 2, 3]
-```
-
-To remove unwanted values from an array of unique values, use `Set.complement()`.
-
-```javascript
-var
-// Import.
-Set = swiftSet.Set;
-
-// Remove unwanted items.
-Set.complement(['a', 'b', 'c'], ['c']); // => ['a', 'b']
-
-// The above is equivalent to this.
-new Set(['a', 'b', 'c']).remove('c'); // =? ['a', 'b']
 ```
 
 ### How `Set` uses `Histogram` For Fast Operations
