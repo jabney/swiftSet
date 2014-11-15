@@ -609,6 +609,8 @@ a.equals(b); // => true
 ```
 Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of one and a `max` frequency of three, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both three.
 
+## Histogram
+
 <!---
 ### About Keys
 ```javascript
