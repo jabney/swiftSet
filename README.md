@@ -559,6 +559,8 @@ When the histograms are additively merged, a picture of the two sets' properties
 
 This information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently than the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
 
+Here's a snipet that shows the `difference` operation from `Set` calling into the process method, which iterates over the merged histogram and calls back to the evaluator to determine if an item passed the test.
+
 ```javascript
 // The inner loop of Set's process method, which calls the evaluator.
 a.merge(b);
@@ -572,7 +574,7 @@ if(evaluator) {
 
 // The difference method's evaluator gets called by the above code.
 difference: function(b) {
-  return this.process(b, function evaluator(freq) {
+  return this.process(b, function(freq) {
     return freq < 3;
   });
 },
