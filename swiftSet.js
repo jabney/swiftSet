@@ -572,8 +572,8 @@ Histogram.prototype = {
 
   // Returns the sum of each entry's frequencies.
   total: function() {
-    return this.reduce(function(prev, curr) {
-      return prev + curr;
+    return this.reduce(function(sum, curr) {
+      return sum + curr;
     }, 0);
   },
 
@@ -585,8 +585,8 @@ Histogram.prototype = {
   // Returns the Shannon entropy of the histogram in bits per symbol.
   entropy: function() {
     var size = this.total();
-    return this.reduce(function(prev, freq) {
-      return prev - freq/size * Math.log2(freq/size);
+    return this.reduce(function(sum, freq) {
+      return sum - freq/size * Math.log2(freq/size);
     }, 0);
   },
 
