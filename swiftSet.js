@@ -590,9 +590,12 @@ Histogram.prototype = {
     }, 0);
   },
 
-  // Returns the total number of bits in the histogram (as Shannon entropy).
-  bits: function() {
-    return this.entropy() * this.total();
+  // Returns the total number of bits in the histogram. Specify a 'base' to
+  // assume a uniform probability instead of using Shannon entropy.
+  bits: function(base) {
+    return this.total() * (base ?
+      Math.log2(base) :
+      this.entropy());
   },
 
   // Determine if another histogram is equivalent to this one.
