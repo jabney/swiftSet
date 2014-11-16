@@ -582,6 +582,14 @@ Histogram.prototype = {
     return this.total() / this.size();
   },
 
+  // Returns the Shannon entropy of the histogram in bits per symbol.
+  entropy: function() {
+    var size = this.total();
+    return this.reduce(function(prev, freq) {
+      return prev - freq/size * Math.log2(freq/size);
+    }, 0);
+  },
+
   // Determine if another histogram is equivalent to this one.
   equals: function(histogram) {
     return this.keyify() === histogram.keyify();
