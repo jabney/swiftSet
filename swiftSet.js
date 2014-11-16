@@ -74,18 +74,18 @@ function isWrapped(obj) {
 }
 
 // ---------------------------------------------------------------
-// Set - produces a set of unique items from an array (or another
-// set) that can be queried for its properties. It supports four
-// common set operations (union, intersection, difference,
-// complement) as well as some useful utility methods. The set
-// operations are quite fast, as are set creation and querying. 
+// Set - produces a set of unique items that can be queried for its
+// properties. It supports five common set operations (union,
+// intersection, difference, complement, equals) as well as some
+// useful utility methods. The set operations are quite fast, as are
+// set creation and querying. 
 //
 // Example usage: 
 //
 // var set = new Set([1, 1, 2, 3, 3, 3]).has(2) => true
 // var set = new Set([1, 1, 2, 3, 3, 3]).size() => 3
-// var set = new Set([1, 1, 2, 3, 3, 3]).add(4) => this // [1, 2, 3, 4]
-// var set = new Set([1, 1, 2, 3, 3, 3]).remove(3) => this // [1, 2]
+// var set = new Set([1, 1, 2, 3, 3, 3]).add(4) // (1, 2, 3, 4)
+// var set = new Set([1, 1, 2, 3, 3, 3]).remove(3) // (1, 2, 4)
 // 
 // Set Operations Example:
 // 
