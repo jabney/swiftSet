@@ -590,7 +590,7 @@ Histogram.prototype = {
     }, 0);
   },
 
-  // Returns the total number of bits in the histogram.
+  // Returns the total number of bits in the histogram (as Shannon entropy).
   bits: function() {
     return this.entropy() * this.total();
   },
