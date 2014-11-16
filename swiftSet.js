@@ -461,18 +461,6 @@ function Histogram(items, key) {
     return this;
   };
 
-  // Add one or more items to the histogram.
-  this.add = function() {
-    this.addItems(slice.call(arguments, 0));
-    return this;
-  };
-
-  // Remove one or more items from the histogram.
-  this.remove = function() {
-    this.removeItems(slice.call(arguments, 0));
-    return this;
-  };
-
   // Returns a copy of this histogram.
   this.copy = function() {
     return new Histogram(null, key).merge(this);
@@ -536,6 +524,18 @@ Histogram.wrapObj = wrapObj;
 Histogram.isWrapped = isWrapped;
 
 Histogram.prototype = {
+
+  // Add one or more items to the histogram.
+  add: function() {
+    this.addItems(slice.call(arguments, 0));
+    return this;
+  },
+
+  // Remove one or more items from the histogram.
+  remove: function() {
+    this.removeItems(slice.call(arguments, 0));
+    return this;
+  },
 
   // Returns an array of the histogram's items.
   items: function() {
