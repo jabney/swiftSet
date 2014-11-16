@@ -9,7 +9,7 @@ Contents
     + [Set Operations](#set-operations)
     + [Sets of Objects](#sets-of-objects)
       + [The `toString` Method](#the-tostring-method)
-      + [The Object `key` Method](#the-object-key-method)
+      + [The Object `hkey` Method](#the-object-hkey-method)
       + [The Global Key Method](#the-global-key-method)
     + [Mixed Values](#mixed-values)
       + [How The Wrapper Works](#how-the-wrapper-works)
@@ -180,8 +180,8 @@ set.has(o1); // => true
 set.items() // => [1], this could also be ["1"] or [o1].
 ```
 
-##### The Object `key` Method
-This method requires that objects in the set each have a `key` property, and that the property is either a value or a function. This method is particularly useful when overriding an object's `toString` method is not an option, or when a set needs to contain [Mixed Values](#mixed-values) consisting of objects and numeric values and/or numeric strings.
+##### The Object `hkey` Method
+This method requires that objects in the set each have a `hkey` property, and that the property is either a value or a function. This method is particularly useful when overriding an object's `toString` method is not an option, or when a set needs to contain [Mixed Values](#mixed-values) consisting of objects and numeric values and/or numeric strings.
 
 ```javascript
 var
@@ -189,10 +189,10 @@ var
 Set = swiftSet.Set,
 
 // Create objects with a value key.
-o1 = {key: 1},
-o2 = {key: 2},
-o3 = {key: 3},
-o4 = {key: 4},
+o1 = {hkey: 1},
+o2 = {hkey: 2},
+o3 = {hkey: 3},
+o4 = {hkey: 4},
 
 // Create two sets.
 a = new Set([o1, o1, o2, o3]),
@@ -210,10 +210,10 @@ function key() {
   return this.id;  
 }
 
-o1 = {id: 1, key: key},
-o2 = {id: 2, key: key},
-o3 = {id: 3, key: key},
-o4 = {id: 4, key: key},
+o1 = {id: 1, hkey: key},
+o2 = {id: 2, hkey: key},
+o3 = {id: 3, hkey: key},
+o4 = {id: 4, hkey: key},
 
 // Create two sets.
 a = new Set([o1, o2, o3]),
@@ -228,7 +228,7 @@ a.difference(b); // => [o1, o4]
 ```
 
 ##### The Global Key Method
-This method requires that a `key` property or function is specified in `Set`'s constructor. The effective difference between this method and the [Object `key` Method](#the-object-key-method) is that when a global key is specified, it's expected that every item in the set will be an object with that property; whereas objects making use of the [Object `key` Method](#the-object-key-method) can be mixed with other values in the set. See [Mixed Values](#mixed-values) for more information.
+This method requires that a `key` property or function is specified in `Set`'s constructor. The effective difference between this method and the [Object `kkey` Method](#the-object-kkey-method) is that when a global key is specified, it's expected that every item in the set will be an object with that property; whereas objects making use of the [Object `hkey` Method](#the-object-hkey-method) can be mixed with other values in the set. See [Mixed Values](#mixed-values) for more information.
 
 ```javascript
 var

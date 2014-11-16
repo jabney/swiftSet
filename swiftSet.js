@@ -400,7 +400,7 @@ function Histogram(items, key) {
       // This fallback is necessary so that objects can be mixed with
       // other items in the histogram.
       function(obj) {
-        var key = obj.key, type = typeof key;
+        var key = obj.hkey, type = typeof key;
         return type === 'undefined' ? obj : 
           type === 'function' ? key.call(obj) : key;
       } :

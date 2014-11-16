@@ -12,11 +12,11 @@ function key() {
 
 describe('Histogram', function() {
   var
-    o1 = { id: 'o1', key: key }, 
-    o2 = { id: 'o2', key: key }, 
-    o3 = { id: 'o3', key: key }, 
-    o4 = { id: 'o4', key: key }, 
-    o5 = { id: 'o5', key: key }
+    o1 = { id: 'o1', hkey: key }, 
+    o2 = { id: 'o2', hkey: key }, 
+    o3 = { id: 'o3', hkey: key }, 
+    o4 = { id: 'o4', hkey: key }, 
+    o5 = { id: 'o5', hkey: key }
   ;
 
   beforeEach(function() {
@@ -260,13 +260,13 @@ describe('Histogram', function() {
 
     describe('uses object key values and functions', function() {
 
-      it('uses "key" as an object value property', function() {
+      it('uses "hkey" as an object value property', function() {
         var
-        o1 = { key: 'o1' }, 
-        o2 = { key: 'o2' }, 
-        o3 = { key: 'o3' }, 
-        o4 = { key: 'o4' }, 
-        o5 = { key: 'o5' },
+        o1 = { hkey: 'o1' }, 
+        o2 = { hkey: 'o2' }, 
+        o3 = { hkey: 'o3' }, 
+        o4 = { hkey: 'o4' }, 
+        o5 = { hkey: 'o5' },
         hist = new Histogram([o1, o2, o3, o4, o5]);
 
         expect(hist.size()).toEqual(5);
@@ -275,13 +275,13 @@ describe('Histogram', function() {
         expect(hist.max()).toEqual(1);
       });
 
-      it('uses "key" as an object function property', function() {
+      it('uses "hkey" as an object function property', function() {
         var
-        o1 = { id: 'o1', key: key }, 
-        o2 = { id: 'o2', key: key }, 
-        o3 = { id: 'o3', key: key }, 
-        o4 = { id: 'o4', key: key }, 
-        o5 = { id: 'o5', key: key },
+        o1 = { id: 'o1', hkey: key }, 
+        o2 = { id: 'o2', hkey: key }, 
+        o3 = { id: 'o3', hkey: key }, 
+        o4 = { id: 'o4', hkey: key }, 
+        o5 = { id: 'o5', hkey: key },
         hist = new Histogram([o1, o2, o3, o4, o5]);
 
         expect(hist.size()).toEqual(5);
