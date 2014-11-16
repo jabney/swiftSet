@@ -34,10 +34,10 @@ describe('Histogram', function() {
       expect(hist.has(2)).toBe(true);
       expect(hist.has(3)).toBe(true);
 
-      expect(hist.count(0)).toEqual(0);
-      expect(hist.count(1)).toEqual(2);
-      expect(hist.count(2)).toEqual(2);
-      expect(hist.count(3)).toEqual(2);
+      expect(hist.freq(0)).toEqual(0);
+      expect(hist.freq(1)).toEqual(2);
+      expect(hist.freq(2)).toEqual(2);
+      expect(hist.freq(3)).toEqual(2);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(6);
@@ -54,10 +54,10 @@ describe('Histogram', function() {
       expect(hist.has('b')).toBe(true);
       expect(hist.has('c')).toBe(true);
 
-      expect(hist.count('z')).toEqual(0);
-      expect(hist.count('a')).toEqual(2);
-      expect(hist.count('b')).toEqual(2);
-      expect(hist.count('c')).toEqual(2);
+      expect(hist.freq('z')).toEqual(0);
+      expect(hist.freq('a')).toEqual(2);
+      expect(hist.freq('b')).toEqual(2);
+      expect(hist.freq('c')).toEqual(2);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(6);
@@ -74,10 +74,10 @@ describe('Histogram', function() {
       expect(hist.has(o2)).toBe(true);
       expect(hist.has(o3)).toBe(true);
 
-      expect(hist.count(o5)).toEqual(0);
-      expect(hist.count(o1)).toEqual(2);
-      expect(hist.count(o2)).toEqual(2);
-      expect(hist.count(o3)).toEqual(2);
+      expect(hist.freq(o5)).toEqual(0);
+      expect(hist.freq(o1)).toEqual(2);
+      expect(hist.freq(o2)).toEqual(2);
+      expect(hist.freq(o3)).toEqual(2);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(6);
@@ -102,11 +102,11 @@ describe('Histogram', function() {
       expect(hist.has(4)).toBe(true);
       expect(hist.has(5)).toBe(true);
       
-      expect(hist.count(1)).toEqual(0)
-      expect(hist.count(2)).toEqual(0);
-      expect(hist.count(3)).toEqual(4);
-      expect(hist.count(4)).toEqual(1);
-      expect(hist.count(5)).toEqual(1);
+      expect(hist.freq(1)).toEqual(0)
+      expect(hist.freq(2)).toEqual(0);
+      expect(hist.freq(3)).toEqual(4);
+      expect(hist.freq(4)).toEqual(1);
+      expect(hist.freq(5)).toEqual(1);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(6);
@@ -123,11 +123,11 @@ describe('Histogram', function() {
       expect(hist.has(4)).toBe(true);
       expect(hist.has(5)).toBe(true);
 
-      expect(hist.count(1)).toEqual(0)
-      expect(hist.count(2)).toEqual(0);
-      expect(hist.count(3)).toEqual(4);
-      expect(hist.count(4)).toEqual(2);
-      expect(hist.count(5)).toEqual(2);
+      expect(hist.freq(1)).toEqual(0)
+      expect(hist.freq(2)).toEqual(0);
+      expect(hist.freq(3)).toEqual(4);
+      expect(hist.freq(4)).toEqual(2);
+      expect(hist.freq(5)).toEqual(2);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(8);
@@ -148,11 +148,11 @@ describe('Histogram', function() {
       expect(hist.has('d')).toBe(true);
       expect(hist.has('e')).toBe(true);
       
-      expect(hist.count('a')).toEqual(0)
-      expect(hist.count('b')).toEqual(0);
-      expect(hist.count('c')).toEqual(4);
-      expect(hist.count('d')).toEqual(1);
-      expect(hist.count('e')).toEqual(1);
+      expect(hist.freq('a')).toEqual(0)
+      expect(hist.freq('b')).toEqual(0);
+      expect(hist.freq('c')).toEqual(4);
+      expect(hist.freq('d')).toEqual(1);
+      expect(hist.freq('e')).toEqual(1);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(6);
@@ -169,11 +169,11 @@ describe('Histogram', function() {
       expect(hist.has('d')).toBe(true);
       expect(hist.has('e')).toBe(true);
 
-      expect(hist.count('a')).toEqual(0)
-      expect(hist.count('b')).toEqual(0);
-      expect(hist.count('c')).toEqual(4);
-      expect(hist.count('d')).toEqual(2);
-      expect(hist.count('e')).toEqual(2);
+      expect(hist.freq('a')).toEqual(0)
+      expect(hist.freq('b')).toEqual(0);
+      expect(hist.freq('c')).toEqual(4);
+      expect(hist.freq('d')).toEqual(2);
+      expect(hist.freq('e')).toEqual(2);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(8);
@@ -194,11 +194,11 @@ describe('Histogram', function() {
       expect(hist.has(o4)).toBe(true);
       expect(hist.has(o5)).toBe(true);
       
-      expect(hist.count(o1)).toEqual(0)
-      expect(hist.count(o2)).toEqual(0);
-      expect(hist.count(o3)).toEqual(4);
-      expect(hist.count(o4)).toEqual(1);
-      expect(hist.count(o5)).toEqual(1);
+      expect(hist.freq(o1)).toEqual(0)
+      expect(hist.freq(o2)).toEqual(0);
+      expect(hist.freq(o3)).toEqual(4);
+      expect(hist.freq(o4)).toEqual(1);
+      expect(hist.freq(o5)).toEqual(1);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(6);
@@ -215,11 +215,11 @@ describe('Histogram', function() {
       expect(hist.has(o4)).toBe(true);
       expect(hist.has(o5)).toBe(true);
 
-      expect(hist.count(o1)).toEqual(0)
-      expect(hist.count(o2)).toEqual(0);
-      expect(hist.count(o3)).toEqual(4);
-      expect(hist.count(o4)).toEqual(2);
-      expect(hist.count(o5)).toEqual(2);
+      expect(hist.freq(o1)).toEqual(0)
+      expect(hist.freq(o2)).toEqual(0);
+      expect(hist.freq(o3)).toEqual(4);
+      expect(hist.freq(o4)).toEqual(2);
+      expect(hist.freq(o5)).toEqual(2);
 
       expect(hist.size()).toEqual(3);
       expect(hist.total()).toEqual(8);
@@ -362,9 +362,9 @@ describe('Histogram', function() {
       expect(hist.has(o3)).toEqual(true);
       expect(hist.has(o4)).toEqual(false);
 
-      expect(hist.count(o1)).toEqual(1);
-      expect(hist.count(o2)).toEqual(2);
-      expect(hist.count(o3)).toEqual(3);
+      expect(hist.freq(o1)).toEqual(1);
+      expect(hist.freq(o2)).toEqual(2);
+      expect(hist.freq(o3)).toEqual(3);
     });
 
     it('uses an object function property', function() {
@@ -382,9 +382,9 @@ describe('Histogram', function() {
       expect(hist.has(o3)).toEqual(true);
       expect(hist.has(o4)).toEqual(false);
 
-      expect(hist.count(o1)).toEqual(1);
-      expect(hist.count(o2)).toEqual(2);
-      expect(hist.count(o3)).toEqual(3);
+      expect(hist.freq(o1)).toEqual(1);
+      expect(hist.freq(o2)).toEqual(2);
+      expect(hist.freq(o3)).toEqual(3);
     });
   });
 
@@ -426,7 +426,7 @@ describe('Histogram', function() {
 
     it('produces a correct list of counts', function() {
       var hist = new Histogram([7, 8, 8, 9, 9, 9]),
-        counts = hist.counts();
+        counts = hist.frequencies();
 
       expect(counts).toContain(1);
       expect(counts).toContain(2);
@@ -519,9 +519,9 @@ describe('Histogram', function() {
       expect(hist1.total()).toEqual(6);
       expect(hist1.min()).toEqual(1);
       expect(hist1.max()).toEqual(3);
-      expect(hist1.count(h1)).toEqual(1);
-      expect(hist1.count(h2)).toEqual(2);
-      expect(hist1.count(h3)).toEqual(3);
+      expect(hist1.freq(h1)).toEqual(1);
+      expect(hist1.freq(h2)).toEqual(2);
+      expect(hist1.freq(h3)).toEqual(3);
       expect(hist1.equals(hist2)).toEqual(true);
       expect(hist1.equals(hist3)).toEqual(false);
     });
@@ -624,11 +624,11 @@ describe('Histogram', function() {
       expect(hist2.has(o4)).toEqual(true);
       expect(hist2.has(o5)).toEqual(true);
 
-      expect(hist2.count(o1)).toEqual(1);
-      expect(hist2.count(o2)).toEqual(2);
-      expect(hist2.count(o3)).toEqual(3);
-      expect(hist2.count(o4)).toEqual(1);
-      expect(hist2.count(o5)).toEqual(1);
+      expect(hist2.freq(o1)).toEqual(1);
+      expect(hist2.freq(o2)).toEqual(2);
+      expect(hist2.freq(o3)).toEqual(3);
+      expect(hist2.freq(o4)).toEqual(1);
+      expect(hist2.freq(o5)).toEqual(1);
     });
   });
 });

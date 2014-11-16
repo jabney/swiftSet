@@ -121,8 +121,8 @@ function Set(a, key) {
     // Merge the histograms and evaluate the contents.
     a.merge(b);
     if(evaluator) {
-      a.each(function(item, count) {
-        evaluator(count) && out.push(item); 
+      a.each(function(item, freq) {
+        evaluator(freq) && out.push(item); 
       });
       return out;
     } else {
@@ -150,7 +150,7 @@ function Set(a, key) {
   // Encodes key/type pairs for each element in the set.
   this.keyify = function() {
     var uid = [], typeCode;
-    hist.each(function(item, count, key) {
+    hist.each(function(item, freq, key) {
       uid.push(key + ',');
     });
     return '{' + uid.sort().join('').slice(0, -1) + '}';
@@ -219,15 +219,15 @@ Set.prototype = {
 
   // The set of items from each set (a or b).
   union: function(b) {
-    return this.process(b, function(count) {
+    return this.process(b, function(freq) {
       return true;
     });
   },
 
   // The set of items that are common to both sets (a and b).
   intersection: function(b) {
-    return this.process(b, function(count) {
-      return count === 3;
+    return this.process(b, function(freq) {
+      return freq === 3;
     });
   },
 
@@ -236,16 +236,16 @@ Set.prototype = {
   // Note that for disjoint sets, this is the same as the 
   // union of 'a' and 'b'.
   difference: function(b) {
-    return this.process(b, function(count) {
-      return count < 3;
+    return this.process(b, function(freq) {
+      return freq < 3;
     });
   },
 
   // Relative complement. The set of items from 'a' except where
   // the value is also in 'b' (a minus b).
   complement: function(b) {
-    return this.process(b, function(count) {
-      return count == 1;
+    return this.process(b, function(freq) {
+      return freq == 1;
     });
   },
 
@@ -278,27 +278,27 @@ Set.prototype = {
 // Processes a histogram consructed from two arrays, 'a' and 'b'.
 // This function is used generically by the below set operation 
 // methods, a.k.a, 'evaluators', to return some subset of
-// a set union, based on counts in the histogram. 
+// a set union, based on frequencies in the histogram. 
 Set.process = function(a, b, evaluator) {
   var hist = Object.create(null), out = [], key;
   a.forEach(function(value) {
     if(!hist[value]) {
-      hist[value] = { value: value, count: 1 };
+      hist[value] = { value: value, freq: 1 };
     }
   });
   // Merge b into the histogram.
   b.forEach(function(value) {
     if (hist[value]) {
-      if (hist[value].count === 1)
-        hist[value].count = 3;
+      if (hist[value].freq === 1)
+        hist[value].freq = 3;
     } else {
-      hist[value] = { value: value, count: 2 };
+      hist[value] = { value: value, freq: 2 };
     }
   });
   // Call the given evaluator.
   if (evaluator) {
     for (key in hist) {
-      if (evaluator(hist[key].count)) out.push(hist[key].value);
+      if (evaluator(hist[key].freq)) out.push(hist[key].value);
     }
     return out;
   } else {
@@ -309,7 +309,7 @@ Set.process = function(a, b, evaluator) {
 // Join two sets together.
 // Set.union([1, 2, 2], [2, 3]) => [1, 2, 3]
 Set.union = function(a, b) {
-  return Set.process(a, b, function(count) {
+  return Set.process(a, b, function(freq) {
     return true;
   });
 };
@@ -317,8 +317,8 @@ Set.union = function(a, b) {
 // Return items common to both sets. 
 // Set.intersection([1, 1, 2], [2, 2, 3]) => [2]
 Set.intersection = function(a, b) {
-  return Set.process(a, b, function(count) {
-    return count === 3;
+  return Set.process(a, b, function(freq) {
+    return freq === 3;
   });
 };
 
@@ -326,8 +326,8 @@ Set.intersection = function(a, b) {
 // are not in both sets.
 // Set.difference([1, 1, 2], [2, 3, 3]) => [1, 3]
 Set.difference = function(a, b) {
-  return Set.process(a, b, function(count) {
-    return count < 3;
+  return Set.process(a, b, function(freq) {
+    return freq < 3;
   });
 };
 
@@ -335,8 +335,8 @@ Set.difference = function(a, b) {
 // not also in 'b'.
 // Set.complement([1, 2, 2], [2, 2, 3]) => [3]
 Set.complement = function(a, b) {
-  return Set.process(a, b, function(count) {
-    return count === 1;
+  return Set.process(a, b, function(freq) {
+    return freq === 1;
   });
 };
 
@@ -347,8 +347,8 @@ Set.equals = function(a, b) {
   var max = 0, min = Math.pow(2, 53), key,
     hist = Set.process(a, b);
   for (var key in hist) {
-    max = Math.max(max, hist[key].count);
-    min = Math.min(min, hist[key].count);
+    max = Math.max(max, hist[key].freq);
+    min = Math.min(min, hist[key].freq);
   }
   return min === 3 && max === 3;
 };
@@ -371,8 +371,8 @@ swiftSet.Set = Set;
 
 // var vc = [],
 // hist = new Histogram(str.toLowerCase().split(''))
-//   .each(function(value, count) {
-//     vc.push(value, count);
+//   .each(function(value, freq) {
+//     vc.push(value, freq);
 //   });
 
 // console.log(vc);
@@ -380,8 +380,8 @@ swiftSet.Set = Set;
 
 // vc = [];
 // hist = new Histogram(str.toLowerCase().split(' '))
-//   .each(function(value, count) {
-//     vc.push(value, count);
+//   .each(function(value, freq) {
+//     vc.push(value, freq);
 //   });
 
 // console.log(vc);
@@ -418,20 +418,20 @@ function Histogram(items, key) {
     add(item);
   });
 
-  // Add a single item to the histogram. If count is specified,
-  // set the item's count; this facilitates the merge operation.
-  function add(item, count) {
+  // Add a single item to the histogram. If 'freq' is specified,
+  // set the item's frequency; this facilitates the merge operation.
+  function add(item, freq) {
     var key = uid(item),
-    count = typeof count === 'undefined' ? 1 : count;
-    // If the entry already exists, update the count.
+    freq = typeof freq === 'undefined' ? 1 : freq;
+    // If the entry already exists, update the frequency.
     if (hist[key]) {
-      hist[key].count += count;
+      hist[key].freq += freq;
     // Otherwise create a new entry and update the length.
     } else {
-      hist[key] = { item: item, count: count };
+      hist[key] = { item: item, freq: freq };
       _length++;
     }
-    _max = Math.max(_max, hist[key].count);
+    _max = Math.max(_max, hist[key].freq);
     return this;
   }
 
@@ -478,14 +478,14 @@ function Histogram(items, key) {
     return new Histogram(null, key).merge(this);
   };
 
-  // By default, sets all the histogram's counts to 1. If count 
-  // is specified, sets all the histogram's counts to the given count.
-  this.normalize = function(count) {
-    var key, count = typeof count === 'undefined' ? 1 : count;
+  // By default, sets all the histogram's frequencies to 1. If 'freq' 
+  // is specified, sets all the histogram's frequencies to the given freq.
+  this.normalize = function(freq) {
+    var key, freq = typeof freq === 'undefined' ? 1 : freq;
     for (key in hist) {
-      hist[key].count = count;
+      hist[key].freq = freq;
     }
-    _max = count;
+    _max = freq;
     return this;
   };
 
@@ -494,7 +494,7 @@ function Histogram(items, key) {
   this.each = function(action, context) {
     for (var key in hist) {
       if (action.call(
-        context, hist[key].item, hist[key].count, key
+        context, hist[key].item, hist[key].freq, key
      )) break;
     }
     return this;
@@ -511,21 +511,21 @@ function Histogram(items, key) {
     return _length;
   };
 
-  // Returns the maximum count of items in the histogram.
+  // Returns the maximum frequency of items in the histogram.
   this.max = function() {
     return _max;
   };
 
-  // Returns the count corresponding to the given value.
-  this.count = function(value) {
-    var key = uid(value);
-    return hist[key] === undefined ? 0 : hist[key].count;
+  // Returns the frequency corresponding to the given value.
+  this.freq = function(item) {
+    var key = uid(item);
+    return hist[key] === undefined ? 0 : hist[key].freq;
   };
 
   // Merges the given histogram into this one.
   this.merge = function(h) {
-    h.each(function(item, count) {
-      add(item, count);
+    h.each(function(item, freq) {
+      add(item, freq);
     });
     return this;
   };
@@ -544,16 +544,16 @@ Histogram.prototype = {
     });
   },
 
-  // Returns an array of the histogram's counts.
-  counts: function() {
-    return this.map(function(item, count) {
-      return count;
+  // Returns an array of the histogram's frequencies.
+  frequencies: function() {
+    return this.map(function(item, freq) {
+      return freq;
     });
   },
 
   // Returns an array of the histogram's keys.
   keys: function() {
-    return this.map(function(item, count, key) {
+    return this.map(function(item, freq, key) {
       return key;
     });
   },
@@ -565,19 +565,19 @@ Histogram.prototype = {
     });
   },
 
-  // Returns the minimum count in the histogram.
+  // Returns the minimum frequency in the histogram.
   min: function() {
-    return Math.min.apply(null, this.counts());
+    return Math.min.apply(null, this.frequencies());
   },
 
-  // Returns the sum of each entry's counts.
+  // Returns the sum of each entry's frequencies.
   total: function() {
     return this.reduce(function(prev, curr) {
       return prev + curr;
     }, 0);
   },
 
-  // Returns the average value of counts in the histogram.
+  // Returns the average value of frequencies in the histogram.
   average: function() {
     return this.total() / this.size();
   },
@@ -606,25 +606,25 @@ Histogram.prototype = {
   // Returns an array of user-transformed entries.
   map: function(action, context) {
     var out = [];
-    this.each(function(item, count, key) {
-      out.push(action.call(this, item, count, key));
+    this.each(function(item, freq, key) {
+      out.push(action.call(this, item, freq, key));
     }, context);
     return out;
   },
 
-  // Reduces all counts in the histogram to a single value.
+  // Reduces all frequencies in the histogram to a single value.
   reduce: function(action, initial) {
-    return this.counts().reduce(function(prev, curr) {
+    return this.frequencies().reduce(function(prev, curr) {
       return action(prev, curr);
     }, initial);
   },
 
-  // Encodes key/type/count triplets for each element in the histogram.
+  // Encodes key/type/frequency triplets for each element in the histogram.
   // Histograms can be considered equivalent if their keys are equal.
   keyify: function() {
     var uid = [], typeCode;
-    this.each(function(item, count, key) {
-      uid.push(key + ':' + count + ',');
+    this.each(function(item, freq, key) {
+      uid.push(key + ':' + freq + ',');
     });
     return '{' + uid.sort().join('').slice(0, -1) + '}';
   },
