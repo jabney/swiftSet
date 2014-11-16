@@ -590,6 +590,11 @@ Histogram.prototype = {
     }, 0);
   },
 
+  // Returns the total number of bits in the histogram.
+  bits: function() {
+    return this.entropy() * this.total();
+  },
+
   // Determine if another histogram is equivalent to this one.
   equals: function(histogram) {
     return this.keyify() === histogram.keyify();
