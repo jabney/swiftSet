@@ -228,7 +228,7 @@ a.difference(b); // => [o1, o4]
 ```
 
 ##### The Global Key Method
-This method requires that a `key` property or function is specified in `Set`'s constructor. The effective difference between this method and the [Object `kkey` Method](#the-object-kkey-method) is that when a global key is specified, it's expected that every item in the set will be an object with that property; whereas objects making use of the [Object `hkey` Method](#the-object-hkey-method) can be mixed with other values in the set. See [Mixed Values](#mixed-values) for more information.
+This method requires that a `key` property or function is specified in `Set`'s constructor. The effective difference between this method and the [Object `hkey` Method](#the-object-hkey-method) is that when a global key is specified, it's expected that every item in the set will be an object with that property; whereas objects making use of the [Object `hkey` Method](#the-object-hkey-method) can be mixed with other values in the set. See [Mixed Values](#mixed-values) for more information.
 
 ```javascript
 var
@@ -268,6 +268,47 @@ b.size(); // => 3
 // Perform an operation.
 a.intersection(b); // => [o2, o3]
 ```
+
+##### The Wrapper Method
+
+Another option for adding objects to sets is to wrap them using `Set.wrapObj()`. This method requires a bit of extra work, but it may be desirable in cases where you want to mix objects in a set with other types such as with strings and/or numbers but you don't want to use the [Object `hkey` Method](#the-object-hkey-method). When objects are wrapped, they're given a wrapper object which has a `toString` method. The default `toString` method of the wrapper is suitable for `Number`s and `String`s, but it will likely not be suitable for object literals.
+
+```javascript
+var
+// Import.
+Set = swiftSet.Set,
+
+// Specify a custom toString method for the wrapper.
+wrap = Set.wrapObj(function() { return this.item.id; }),
+
+// Create objects with a unique identifier.
+o1 = {id: 1},
+o2 = {id: 2},
+o3 = {id: 3},
+o4 = {id: 4},
+
+// Create a list of wrapped objects.
+items = [o1, o2, o3, o4].map(function(item) {
+  return wrap(item);
+}),
+
+// Create a set of wrapped objects.
+set = new Set(items);
+
+// The set should have four items.
+set.size(); // => 4
+
+// Check that the items exist.
+set.has(wrap(o1)); // => true
+set.has(wrap(o2)); // => true
+set.has(wrap(o3)); // => true
+set.has(wrap(o4)); // => true
+
+// Get the items unwrapped.
+set.unwrap(); // => [o1, o2, o3, o4];
+```
+
+For more information on Wrappers, see [Mixed Values](#mixed-values), [How The Wrapper Works](#how-the-wrapper-works), and [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper).
 
 #### Mixed Values
 
