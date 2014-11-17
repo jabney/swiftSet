@@ -11,6 +11,7 @@ Contents
       + [The `toString` Method](#the-tostring-method)
       + [The Object `hkey` Method](#the-object-hkey-method)
       + [The Global Key Method](#the-global-key-method)
+      + [The Wrapper Method](#the-wrapper-method)
     + [Mixed Values](#mixed-values)
       + [How The Wrapper Works](#how-the-wrapper-works)
       + [Specify A Custom `tostring` Method For The Wrapper](#specify-a-custom-tostring-method-for-the-wrapper)
