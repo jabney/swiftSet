@@ -131,7 +131,7 @@ a.equals(b); // => false
 Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness in order to differentiate it from other objects. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
 
 ##### The `toString` Method
-This method requires that objects in the set have a `toString` method which can return a unique identifier for the object.
+This method requires that objects in the set have a `toString` method which can return a unique identifier for the object. `toString` gets called automatically whenever an object is inserted as a key in an object literal; it can be overridden to return some unique identifier.
 
 ```javascript
 var
@@ -272,7 +272,7 @@ a.intersection(b); // => [o2, o3]
 
 ##### The Wrapper Method
 
-Another option for adding objects to sets is to wrap them using `Set.wrapObj()`. This method requires a bit of extra work, but it may be desirable in cases where you want to mix objects in a set with other types such as with strings and/or numbers but you don't want to use the [Object `hkey` Method](#the-object-hkey-method). When objects are wrapped, they're given a wrapper object which has a `toString` method. The default `toString` method of the wrapper is suitable for `Number`s and `String`s, but it will likely not be suitable for object literals.
+Another option for adding objects to sets is to wrap them using `Set.wrapObj()`. This method requires a bit of extra work, but it may be desirable in cases where you want to mix objects in a set with other types such as strings and/or numbers but you don't want to use the [Object `hkey` Method](#the-object-hkey-method). When objects are wrapped, they're given a wrapper object which has a `toString` method. The default `toString` method of the wrapper is suitable for `Number`s and `String`s, but it will likely not be readily suitable for some other types such as object literals. In these cases a custom toString method can be specified in the initial call to `wrapObj`. The wrapper will have a property called `item` which will contain the object that was wrapped.
 
 ```javascript
 var
@@ -349,15 +349,14 @@ set.items(); // => [{item: 1, ...}, {item: '1', ...}, {item: 2, ...}, ...]
 // Get an array of the unwrapped items.
 set.unwrap(); // => [1, '1', 2, '2']
 
-// Objects can also be added, as long as they have an object key
-// (or a toString method).
-var o1 = {key: 'o1'},
-o2 = {key: 'o2' };
+// Objects can also be added, as long as one of the key methods is used.
+var o1 = {hkey: 'o1'},
+o2 = {hkey: 'o2' };
 
 // Add objects to set (these are not wrapped).
 set.add(o1, o2);
 
-// Manually unwrap items.
+// Manually unwrap items (or use unwrap as shown above.
 set.items().map(function(item) {
   return isWrapped(item) ? item.item : item;
 }); // => [1, '1', 2, '2', {key: 'o1'}, {key: 'o2'}]
