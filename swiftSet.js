@@ -12,45 +12,41 @@
 // http://github.com/jabney/swiftSet
 // ---------------------------------------------------------------
 
-// ---------------------------------------------------------------
-// Helpers and Shortcuts
-// ---------------------------------------------------------------
-
+// Shortcuts
 var slice = Array.prototype.slice,
-toString = Object.prototype.toString,
 
-// ---------------------------------------------------------------
-// Encode types for key generation.
-// ---------------------------------------------------------------
+// Encode object type for key generation.
+encodeObjType = (function() {
 
-// Return the type of built-in objects via toString.
-typeOf = (function() {
-  var reType = /\[object (\w+)\]/; 
-  return function typeOf(obj) {
-    return reType.exec(Object.prototype.toString.call(obj))[1];
-  };
-})(),
+  var
+  toString = Object.prototype.toString,
 
-// A list of built-in types.
-types = ['Null','Undefined','Array','Boolean','Number','String','Object',
-  'Function','Date','Error','RegExp','Arguments','Math','JSON'],
+  // Return the type of built-in objects via toString.
+  typeOf = (function() {
+    var reType = /\[object (\w+)\]/; 
+    return function(obj) {
+      return reType.exec(Object.prototype.toString.call(obj))[1];
+    };
+  })(),
 
-// Build dictionary for converting type strings to unique codes.
-codes = Object.create(null);
-types.forEach(function(type, index) {
-  codes[type] = index;
-});
-// Result: { 'Null': 0, 'Undefined': 1, 'Array': 2, ... }
+  // A list of built-in types.
+  types = ['Null','Undefined','Array','Boolean','Number','String','Object',
+    'Function','Date','Error','RegExp','Arguments','Math','JSON'],
 
-// Encode a built-in type as a unique number.
-function encodeType(type) {
-  return codes[type] || type;
-}
+  // Build dictionary for converting type strings to unique codes.
+  codes = Object.create(null);
+  types.forEach(function(type, index) {
+    codes[type] = index;
+  });
 
-// Encode an object's type as a unique number.
-function encodeObjType(obj) {
-  return encodeType(typeOf(obj));
-}
+  // Encode an object's type as a unique number.
+  // If the type isn't defined, return the name of the type.
+  return function encodeObjType(obj) {
+    var type = typeOf(obj);
+    return codes[type] || type;
+  }
+
+})();
 
 // Wrap a built-in type and give it a unique key generator.
 function Wrapper(obj, toStr) {
