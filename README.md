@@ -92,6 +92,10 @@ set.items().forEach(function(item) {
 
 // Copy a set.
 var newSet = set.copy(); // ('a', 'b', 'c')
+
+// If a string is passed to the constructor, it is 
+// automatically converted to a character array.
+var caSet = new Set('abcacbbacbcacabcba').items.sort() // => ['a', 'b', 'c']
 ```
 
 #### Set Operations
@@ -386,7 +390,7 @@ In the second instance `toString` returns a key with the value `(1:5)`. The nume
 In the third instance `toString` returns a key with the value `([object Object]:6)`. The numeric code `6` represents the built-in type `Object`. However this key is useless: _every object literal will produce this exact key_. If you want to wrap object literals, you must specify a custom `toString` method for the wrapper. See [Specify a custom `toString` method for the wrapper](#specify-a-custom-tostring-method-for-the-wrapper) below.
 
 ##### Specify A Custom `tostring` Method For The Wrapper
-If for some reason the wrapper's default `toString` method doesn't meet your needs, such as for some type of custom object, a `toString` method can be specified in the call to `Set.wrapObj()`.
+If for some reason the wrapper's default `toString` method doesn't meet your needs, such as for some type of custom object, a `toString` method can be specified in the call to `Set.wrapObj()`. The `toString` method will have access to the wrapped object through the `item` property.
 
 ```javascript
 var
@@ -437,7 +441,7 @@ Set.equals(a, b); // => false
 Set.equals(a, [1, 2, 2, 3]); // => true
 ```
 
-Objects can be used with these operations as long as they have their own `toString` method, or are wrapped. There are no other custom key options that work for values used with these static methods.
+Objects can be used with these operations as long as they have their own `toString` method, or are wrapped. There are no other custom key options that work for values used with these static methods. The below example shows how an array of objects is wrapped before being inserted into a set.
 
 ```javascript
 var
@@ -445,7 +449,7 @@ var
 Set = swiftSet.Set,
 wrap = Set.wrapObj(function() { return this.item.id; }),
 
-// Create two arrays of objects.
+// Create two arrays of wrapped objects.
 a = [{id:1}, {id:2}, {id:3}].map(function(item) {
   return wrap(item);  
 }),
