@@ -566,6 +566,35 @@ Histogram.prototype = {
     return Math.min.apply(null, this.frequencies());
   },
 
+  // Return values that have frequencies greater than 
+  // or equal to the given frequency.
+  ge: function(freq) {
+    var out = [];
+    this.each(function(value, f) {
+      f >= freq && out.push(value);
+    });
+    return out;
+  },
+
+  // Return values that have frequencies less than or
+  // equal to the given frequency.
+  le: function(freq) {
+    var out = [];
+    this.each(function(value, f) {
+      f <= freq && out.push(value);
+    });
+    return out;
+  },
+
+  // Return values that have exactly the given frequency.
+  eq: function(freq) {
+    var out = [];
+    this.each(function(value, f) {
+      f === freq && out.push(value);
+    });
+    return out;
+  },
+
   // Returns the sum of each entry's frequencies.
   total: function() {
     return this.reduce(function(sum, curr) {
