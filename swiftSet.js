@@ -366,7 +366,7 @@ swiftSet.Set = Set;
 // str = str.replace(/[.,]/g, '');
 
 // var vc = [],
-// hist = new Histogram(str.toLowerCase().split(''))
+// hist = new Histogram(str.toLowerCase())
 //   .each(function(value, freq) {
 //     vc.push(value, freq);
 //   });
@@ -387,6 +387,8 @@ swiftSet.Set = Set;
 
 function Histogram(items, key) {
   var hist = Object.create(null), _length = 0, _max = 0,
+  // If 'items' is a string, convert it to an array.
+  items = typeof items === 'string' ? items.split('') : items,
   // Generate a uid function depending on whether key is specified
   // and whether it's a function or value.
   uid = (function() {
