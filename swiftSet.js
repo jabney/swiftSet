@@ -582,15 +582,17 @@ Histogram.prototype = {
   entropy: function() {
     var size = this.total();
     return this.reduce(function(sum, freq) {
-      return sum - freq/size * Math.log2(freq/size);
+      var p = freq/size;
+      return sum - p * Math.log2(p);
     }, 0);
   },
 
-  // Returns the total number of bits in the histogram. Specify a 'base' to
-  // assume a uniform probability instead of using Shannon entropy.
-  bits: function(base) {
-    return this.total() * (base ?
-      Math.log2(base) :
+  // Returns the total number of bits in the histogram.
+  // If 'uniform' is truthy, assume uniform probability of values.
+  // If 'uniform' > 1 assume uniform is a base.
+  bits: function(uniform) {
+    return this.total() * (uniform ?
+      Math.log2(uniform > 1 ? uniform : this.size()) :
       this.entropy());
   },
 
