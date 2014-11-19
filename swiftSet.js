@@ -569,7 +569,7 @@ Histogram.prototype = {
     return Math.min.apply(null, this.frequencies());
   },
 
-  // Return values that have frequencies greater than 
+  // Return items that have frequencies greater than 
   // or equal to the given frequency.
   ge: function(freq) {
     var out = [];
@@ -579,7 +579,7 @@ Histogram.prototype = {
     return out;
   },
 
-  // Return values that have frequencies less than or
+  // Return items that have frequencies less than or
   // equal to the given frequency.
   le: function(freq) {
     var out = [];
@@ -589,7 +589,7 @@ Histogram.prototype = {
     return out;
   },
 
-  // Return values that have exactly the given frequency.
+  // Return items that have exactly the given frequency.
   eq: function(freq) {
     var out = [];
     this.each(function(value, f) {
