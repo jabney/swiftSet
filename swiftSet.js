@@ -1,7 +1,7 @@
 
 (function(swiftSet, undefined) { 
 'use strict';
-
+function v() { return 'swiftSet v0.9.10'; }
 // ---------------------------------------------------------------
 // Set and Histogram - the Histogram is the backing object for
 // Set, but it can also be used to record frequencies of discrete
@@ -11,9 +11,10 @@
 // ---------------------------------------------------------------
 // http://github.com/jabney/swiftSet
 // ---------------------------------------------------------------
+var
 
 // Shortcuts
-var slice = Array.prototype.slice,
+slice = Array.prototype.slice,
 
 // Encode object type for key generation.
 encodeObjType = (function() {
