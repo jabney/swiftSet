@@ -1,7 +1,8 @@
 
-(function(swiftSet, undefined) { 
+(function(swiftSet) { 
 'use strict';
-function version() { return 'swiftSet v0.9.10 http://github.com/jabney/swiftSet'; }
+function version() { return 'swiftSet v0.9.10 MIT License © 2014 James Abney http://github.com/jabney/swiftSet'; }
+
 // ---------------------------------------------------------------
 // Set and Histogram - the Histogram is the backing object for
 // Set, but it can also be used to record frequencies of discrete
