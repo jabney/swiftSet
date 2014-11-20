@@ -599,7 +599,7 @@ Histogram.prototype = {
     return out;
   },
 
-  // Returns the sum of each entry's frequencies.
+  // Returns the sum of all entry's frequencies.
   total: function() {
     return this.reduce(function(sum, curr) {
       return sum + curr;
@@ -650,7 +650,7 @@ Histogram.prototype = {
     }, initial);
   },
 
-  // Encodes key/type/frequency triplets for each element in the histogram.
+  // Encodes key/frequency pairs for each element in the histogram.
   // Histograms can be considered equivalent if their keys are equal.
   keyify: function() {
     var uid = [], typeCode;
