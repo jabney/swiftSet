@@ -272,84 +272,108 @@ Set.prototype = {
 // This also shows the core set operations algorithm without any of
 // the overhead associated with constructing and managing a Set.
 // ---------------------------------------------------------------
+(function() {
+  var uidList = [], uid;
 
-// Processes a histogram consructed from two arrays, 'a' and 'b'.
-// This function is used generically by the below set operation 
-// methods, a.k.a, 'evaluators', to return some subset of
-// a set union, based on frequencies in the histogram. 
-Set.process = function(a, b, evaluator) {
-  var hist = Object.create(null), out = [], key;
-  a.forEach(function(value) {
-    if(!hist[value]) {
-      hist[value] = { value: value, freq: 1 };
-    }
+  // Create and push the uid identity method.
+  uidList.push(uid = function(item) {
+    return item;
   });
-  // Merge b into the histogram.
-  b.forEach(function(value) {
-    if (hist[value]) {
-      if (hist[value].freq === 1)
-        hist[value].freq = 3;
+
+  // Push a new uid method onto the stack. Call this and
+  // supply a unique key generator for sets of objects.
+  Set.pushUid = function(method) {
+      uidList.push(method);
+      uid = method;
+  };
+
+  // Pop the previously pushed uid method off the stack and
+  // assign top of stack to uid.
+  Set.popUid = function() {
+    uidList.length > 1 && uidList.pop();
+    uid = uidList[uidList.length-1];
+  };
+
+  // Processes a histogram consructed from two arrays, 'a' and 'b'.
+  // This function is used generically by the below set operation 
+  // methods, a.k.a, 'evaluators', to return some subset of
+  // a set union, based on frequencies in the histogram. 
+  Set.process = function(a, b, evaluator) {
+    var hist = Object.create(null), out = [], ukey, k;
+    a.forEach(function(value) {
+      ukey = uid.call(value);
+      if(!hist[ukey]) {
+        hist[ukey] = { value: value, freq: 1 };
+      }
+    });
+    // Merge b into the histogram.
+    b.forEach(function(value) {
+      ukey = uid.call(value);
+      if (hist[ukey]) {
+        if (hist[ukey].freq === 1)
+          hist[ukey].freq = 3;
+      } else {
+        hist[ukey] = { value: value, freq: 2 };
+      }
+    });
+    // Call the given evaluator.
+    if (evaluator) {
+      for (k in hist) {
+        if (evaluator(hist[k].freq)) out.push(hist[k].value);
+      }
+      return out;
     } else {
-      hist[value] = { value: value, freq: 2 };
+      return hist;
     }
-  });
-  // Call the given evaluator.
-  if (evaluator) {
-    for (key in hist) {
-      if (evaluator(hist[key].freq)) out.push(hist[key].value);
+  };
+
+  // Join two sets together.
+  // Set.union([1, 2, 2], [2, 3]) => [1, 2, 3]
+  Set.union = function(a, b) {
+    return Set.process(a, b, function(freq) {
+      return true;
+    });
+  };
+
+  // Return items common to both sets. 
+  // Set.intersection([1, 1, 2], [2, 2, 3]) => [2]
+  Set.intersection = function(a, b) {
+    return Set.process(a, b, function(freq) {
+      return freq === 3;
+    });
+  };
+
+  // Symmetric difference. Items from either set that
+  // are not in both sets.
+  // Set.difference([1, 1, 2], [2, 3, 3]) => [1, 3]
+  Set.difference = function(a, b) {
+    return Set.process(a, b, function(freq) {
+      return freq < 3;
+    });
+  };
+
+  // Relative complement. Items from 'a' which are
+  // not also in 'b'.
+  // Set.complement([1, 2, 2], [2, 2, 3]) => [3]
+  Set.complement = function(a, b) {
+    return Set.process(a, b, function(freq) {
+      return freq === 1;
+    });
+  };
+
+  // Returns true if both sets are equivalent, false otherwise.
+  // Set.equals([1, 1, 2], [1, 2, 2]) => true
+  // Set.equals([1, 1, 2], [1, 2, 3]) => false
+  Set.equals = function(a, b) {
+    var max = 0, min = Math.pow(2, 53), key,
+      hist = Set.process(a, b);
+    for (var key in hist) {
+      max = Math.max(max, hist[key].freq);
+      min = Math.min(min, hist[key].freq);
     }
-    return out;
-  } else {
-    return hist;
-  }
-};
-
-// Join two sets together.
-// Set.union([1, 2, 2], [2, 3]) => [1, 2, 3]
-Set.union = function(a, b) {
-  return Set.process(a, b, function(freq) {
-    return true;
-  });
-};
-
-// Return items common to both sets. 
-// Set.intersection([1, 1, 2], [2, 2, 3]) => [2]
-Set.intersection = function(a, b) {
-  return Set.process(a, b, function(freq) {
-    return freq === 3;
-  });
-};
-
-// Symmetric difference. Items from either set that
-// are not in both sets.
-// Set.difference([1, 1, 2], [2, 3, 3]) => [1, 3]
-Set.difference = function(a, b) {
-  return Set.process(a, b, function(freq) {
-    return freq < 3;
-  });
-};
-
-// Relative complement. Items from 'a' which are
-// not also in 'b'.
-// Set.complement([1, 2, 2], [2, 2, 3]) => [3]
-Set.complement = function(a, b) {
-  return Set.process(a, b, function(freq) {
-    return freq === 1;
-  });
-};
-
-// Returns true if both sets are equivalent, false otherwise.
-// Set.equals([1, 1, 2], [1, 2, 2]) => true
-// Set.equals([1, 1, 2], [1, 2, 3]) => false
-Set.equals = function(a, b) {
-  var max = 0, min = Math.pow(2, 53), key,
-    hist = Set.process(a, b);
-  for (var key in hist) {
-    max = Math.max(max, hist[key].freq);
-    min = Math.min(min, hist[key].freq);
-  }
-  return min === 3 && max === 3;
-};
+    return min === 3 && max === 3;
+  };
+})();
 
 // Export
 swiftSet.Set = Set;
