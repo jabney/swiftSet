@@ -285,13 +285,16 @@ Set.prototype = {
   Set.pushUid = function(method) {
       uidList.push(method);
       uid = method;
+      return method;
   };
 
   // Pop the previously pushed uid method off the stack and
   // assign top of stack to uid.
   Set.popUid = function() {
-    uidList.length > 1 && uidList.pop();
+    var prev;
+    uidList.length > 1 && (prev = uidList.pop());
     uid = uidList[uidList.length-1];
+    return prev;
   };
 
   // Processes a histogram consructed from two arrays, 'a' and 'b'.
