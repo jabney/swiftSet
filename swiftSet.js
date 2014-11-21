@@ -276,8 +276,8 @@ Set.prototype = {
   var uidList = [], uid;
 
   // Create and push the uid identity method.
-  uidList.push(uid = function(item) {
-    return item;
+  uidList.push(uid = function() {
+    return this;
   });
 
   // Push a new uid method onto the stack. Call this and
