@@ -16,6 +16,7 @@ Contents
       + [How The Wrapper Works](#how-the-wrapper-works)
       + [Specify A Custom `tostring` Method For The Wrapper](#specify-a-custom-tostring-method-for-the-wrapper)
     + [Static Set Operations](#static-set-operations)
+      + [Setting A Global Uid Method For Static Set Operations](#setting-a-global-uid-method-for-static-set-operations)
   + [How `Set` uses `Histogram` For Fast Operations](#how-set-uses-histogram-for-fast-operations)
   + [Extend Set With Custom Operations](#extend-set-with-custom-operations)
 + [Histogram](#histogram)
@@ -317,7 +318,7 @@ For more information on Wrappers, see [Mixed Values](#mixed-values), [How The Wr
 
 #### Mixed Values
 
-The issue with mixing and matching numeric and string values is that the numeric value `1` and the string `"1"` both evaluate to `"1"` when used as a key in an object literal, which is used in `Set`'s underlying histogram. swiftSet gets around this limitation by providing functionality to give numeric values and numeric strings (or other types) a wrapper object which returns a unique key according to the type of value. 
+The issue with mixing and matching numeric and string values in a set is that the numeric value `1` and the string `"1"` both evaluate to `"1"` when used as a key in an object literal, which is used in `Set`'s underlying histogram. swiftSet gets around this limitation by providing functionality to give numeric values and numeric strings (or other types) a wrapper object which returns a unique key according to the type of value. 
 
 ```javascript
 var
@@ -441,7 +442,7 @@ Set.equals(a, b); // => false
 Set.equals(a, [1, 2, 2, 3]); // => true
 ```
 
-Objects can be used with these operations as long as they have their own `toString` method, or are wrapped. There are no other custom key options that work for values used with these static methods. The below example shows how an array of objects is wrapped before being inserted into a set.
+Objects can be used with these operations as long as they have their own `toString` method, or are wrapped. Objects using one of these two strategies will also work for mixing various object types within a single set. .
 
 ```javascript
 var
@@ -479,6 +480,92 @@ Set.complement(a, b).map(function(item) {
 
 Set.equals(a, b); // => false
 Set.equals(a, [{id:1}, {id:2}, {id:3}]); // => true
+```
+
+However it might be desirable use a global method for key retrieval on whole sets of custom objects. See [Setting A Global Uid Method For Static Set Operations](#setting-a-global-uid-method-for-static-set-operations) for more information.
+
+##### Setting A Global Uid Method For Static Set Operations
+By default, static set operations use an identity function, `uid`, that just returns the given item for use as a key. This is suitable for sets of values that are all strings or all numbers. In order to use static set operations with sets of custom objects, the default key method, an identity function, can be overridden. This is accomplished using `Set.pushUid` and `Set.popUId`. By pushing a new `uid` method onto the stack, the default identity function can be superceded. This system allows multiple `uid` methods to be pushed and popped as necessary to work with sets of custom objects.
+
+```javascript
+var
+// Import.
+Set = swiftSet.Set,
+
+// Create objects with a unique id. 
+o1 = { id: 'id1' },
+o2 = { id: 'id2' },
+o3 = { id: 'id3' },
+o4 = { id: 'id4' },
+o5 = { id: 'id5' },
+
+// Create two arrays of objects for set operations.
+a = [o1, o2, o3, o3],
+b = [o2, o2, o3, o4];
+
+// Push a custom uid method onto the stack.
+Set.pushUid(function() { return this.id; });
+
+// Perform a set operation.
+Set.union(a, b); // => [o1, o2, o3, o4]
+
+// Restore the previous (default) uid method.
+// This is not strictly necessary unless set operations are being
+// used in multiple contexts with different object types.
+Set.popUid();
+
+```
+
+If only one type of custom object is being used throughout a given project, it's not strictly necessary to call `Set.popUId`, but it's good housekeeping in general. However if set operations need to be used in different contexts and with different custom objects, it's not only helpful but necessary to do this.
+
+```javascript
+var
+// Import.
+Set = swiftSet.Set,
+
+// Create objects with a unique id. 
+o1 = { id: 'id1' },
+o2 = { id: 'id2' },
+o3 = { id: 'id3' },
+o4 = { id: 'id4' },
+o5 = { id: 'id5' },
+
+// Create two arrays of objects for set operations.
+a = [o1, o2, o3, o3],
+b = [o2, o2, o3, o4];
+
+// Push a custom uid method onto the stack.
+Set.pushUid(function() { return this.id; });
+
+// Perform a set operation.
+Set.union(a, b); // => [o1, o2, o3, o4]
+
+function doOtherStuff() {
+  var p1 = { _id: '1' },
+  p2 = { _id: '2' },
+  p3 = { _id: '3' },
+  p4 = { _id: '4' },
+  p5 = { _id: '5' },
+  c = [p1, p1, p2, p3],
+  d = [p2, p3, p3, p4], intersection;
+
+  Set.pushUid(function() { return this._id; });
+  intersection = Set.intersection(c, d); // => [o2, o3]
+  
+  // Restore the previously pushed uid method.
+  Set.popUid();
+
+  return intersection;
+}
+
+doOtherStuff();
+
+Set.difference(a, b); // => [o1, o4]
+
+// Restore the default method.
+Set.popUid();
+
+Set.complement([1, 2, 3], [2, 3, 4]); // => [1]
 ```
 
 ### How `Set` uses `Histogram` For Fast Operations
