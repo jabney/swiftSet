@@ -290,13 +290,13 @@ describe('Histogram', function() {
       
       expect(h2.size()).toEqual(0);
       expect(h2.total()).toEqual(0);
-      expect(h2.min()).toEqual(0);
+      expect(h2.min()).toEqual(Infinity);
       expect(h2.max()).toEqual(0);
       expect(h2.freq(o1)).toEqual(0);
-      expect(h2.freq(o2)).toEqual(2);
-      expect(h2.freq(o3)).toEqual(1);
-      expect(h2.freq(o4)).toEqual(1);
-      expect(h2.freq(o5)).toEqual(1);
+      expect(h2.freq(o2)).toEqual(0);
+      expect(h2.freq(o3)).toEqual(0);
+      expect(h2.freq(o4)).toEqual(0);
+      expect(h2.freq(o5)).toEqual(0);
 
     });
   });
