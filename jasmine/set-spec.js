@@ -732,6 +732,13 @@ describe('Set', function() {
       expect(set2.has(o5)).toEqual(true);
     });
   });
+
+  describe('static set operations', function() {
+    it('can perform a union of two sets', function() {
+
+    });
+    
+  });
 });
 
 })(window.swiftSet, undefined);

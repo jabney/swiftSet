@@ -41,8 +41,8 @@ encodeObjType = (function() {
     codes[type] = index;
   });
 
-  // Encode an object's type as a unique number.
-  // If the type isn't defined, return the name of the type.
+  // Encode an object's type as a unique number. If the type code
+  // is not defined, return the type name.
   return function encodeObjType(obj) {
     var type = typeOf(obj);
     return codes[type] || type;
@@ -109,8 +109,9 @@ function isWrapped(obj) {
 function Set(a, key) {
   var hist = new Histogram(a, key), cachedItems = hist.items();
 
-  // Returns a filtered array based on the given evaluator,
-  // or absent an evaluator, returns a merged histogram.
+  // Normalize histograms a and b, then merge and iterate.
+  // Returns a filtered array based on the given evaluator;
+  // absent an evaluator, returns a merged histogram.
   this.process = function(b, evaluator) {
     var items = (b instanceof Set) ? b.items() : b,
     out = [],
@@ -207,6 +208,7 @@ function Set(a, key) {
   this.clear = function() {
     hist.clear();
     cachedItems = [];
+    return this;
   };
 
 }
@@ -297,12 +299,12 @@ Set.prototype = {
   };
 
   // Pop the previously pushed uid method off the stack and
-  // assign top of stack to uid.
+  // assign top of stack to uid. Return the 
   Set.popUid = function() {
     var prev;
     uidList.length > 1 && (prev = uidList.pop());
     uid = uidList[uidList.length-1];
-    return prev;
+    return prev || null;
   };
 
   // Processes a histogram consructed from two arrays, 'a' and 'b'.
@@ -559,6 +561,7 @@ function Histogram(items, key) {
     hist = Object.create(null);
     _length = 0;
     _max = 0;
+    return this;
   }
 }
 
