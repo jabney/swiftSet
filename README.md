@@ -132,7 +132,7 @@ a.equals([1, 2, 2, 3, 3]); // => true
 a.equals(b); // => false
 ```
 
-**Note:** Set operations do not modify the set they're called on. Rather the output of a set operation is a new array containing the results of the operation. If you need a `Set` object comprised of the results from a set operation, create a new set and pass the output of an operation: `var c = new Set(a.intersection(b));`
+**Note:** Set operations do not modify the set they're called on. Rather the output of a set operation is a new array containing the results of the operation. If you need a `Set` object comprised of the results from a set operation, create a new set and pass the output of an operation: `var c = new Set(a.intersection(b));`. Alternately, using `var c = a.copy().clear().addValues(a);` will retain the global key if one was specified in set `a`.
 
 #### Sets of Objects
 Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness in order to differentiate it from other objects. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
