@@ -20,8 +20,7 @@ slice = Array.prototype.slice,
 // Encode object type for key generation.
 encodeObjType = (function() {
 
-  var
-  toString = Object.prototype.toString,
+  var toString = Object.prototype.toString,
 
   // Return the type of built-in objects via toString.
   typeOf = (function() {
