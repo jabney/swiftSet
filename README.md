@@ -98,11 +98,11 @@ a= set.copy(); // ('a', 'b', 'c')
 a = new Set([1, 2, 3, 3]); // => (1, 2, 3)
 b = a.copy([3, 4, 5, 5]); // => (3, 4, 5)
 
+// Clear a set and give it new items.
+a.clear(b.items()); // => (3, 4, 5)
+
 // Clear a set.
 a.clear();  // => ()
-
-// Clear a set and give it new items.
-a.clear(b); // => (3, 4, 5)
 
 // If a string is passed to the constructor, it is 
 // automatically converted to a character array.
@@ -110,7 +110,7 @@ a = new Set('abcacbbacbcacabcba').items().sort() // => ['a', 'b', 'c']
 ```
 
 #### Set Operations
-`Set` supports five basic set operations: union, intersection, difference, complement, and equals. `difference` is the symmetric difference, and `complement` is the relative complement. Set operations produce no side effects, so no state in the calling set is affected.
+`Set` supports five basic set operations: union, intersection, difference, complement, and equals. `difference` is the _symmetric difference_, and `complement` is the _relative complement_. Set operations produce no side effects, so no state in the calling set is affected.
 
 ```javascript
 var
