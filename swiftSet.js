@@ -293,9 +293,9 @@ Set.prototype = {
   // Push a new uid method onto the stack. Call this and
   // supply a unique key generator for sets of objects.
   Set.pushUid = function(method) {
-      uidList.push(method);
-      uid = method;
-      return method;
+    uidList.push(method);
+    uid = method;
+    return method;
   };
 
   // Pop the previously pushed uid method off the stack and
