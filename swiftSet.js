@@ -619,8 +619,7 @@ Histogram.prototype = {
 
   // Returns the minimum frequency in the histogram.
   min: function() {
-    var min = Math.min.apply(null, this.frequencies());
-    return min === Infinity ? 0 : min;
+    return Math.min.apply(null, this.frequencies());
   },
 
   // Return items that have frequencies greater than 
