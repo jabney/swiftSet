@@ -201,6 +201,14 @@ function Set(a, key) {
   this.has = function(item) {
     return hist.has(item);
   };
+
+  // Remove all items from a set.
+  // TODO: unit tests.
+  this.clear = function() {
+    hist.clear();
+    cachedItems = [];
+  };
+
 }
 
 // Helpers
@@ -423,12 +431,12 @@ function Histogram(items, key) {
   uid = (function() {
     return typeof key === 'undefined' ?
       // If key is not defined in the constructor, look for a property 
-      // on the object named 'key' and use it as a value or function.
+      // on the object named 'hkey' and use it as a value or function.
       // This fallback is necessary so that objects can be mixed with
       // other items in the histogram.
       function(obj) {
         var key = obj.hkey, type = typeof key;
-        return type === 'undefined' ? obj : 
+        return type === 'undefined' ? obj :
           type === 'function' ? key.call(obj) : key;
       } :
       // If key is specified in the constructor, use it as a value
@@ -544,6 +552,14 @@ function Histogram(items, key) {
     });
     return this;
   };
+
+  // Clear the histogram of all items.
+  // TODO: unit tests.
+  this.clear = function() {
+    hist = Object.create(null);
+    _length = 0;
+    _max = 0;
+  }
 }
 
 // Helpers
