@@ -183,6 +183,32 @@ describe('Set', function() {
       expect(set.items()).toContain(o5);
       expect(set.items().length).toEqual(3);
     });
+
+    it('can clear a set and initialize it with new values', function() {
+      var
+      o1 = { id: 1 },
+      o2 = { id: 2 },
+      o3 = { id: 3 },
+      o4 = { id: 4 },
+      o5 = { id: 5 },
+      a = [o1, o1, o2, o3, o3],
+      b = [o2, o2, o3, o4, o5],
+      s1 = new Set(a, 'id'), s2;
+
+      expect(s1.size()).toEqual(3);
+      expect(s1.has(o1)).toEqual(true);
+      expect(s1.has(o2)).toEqual(true);
+      expect(s1.has(o3)).toEqual(true);
+
+      s2 = s1.copy().clear(b);
+
+      expect(s2.size()).toEqual(4);
+      expect(s2.has(o1)).toEqual(false);
+      expect(s2.has(o2)).toEqual(true);
+      expect(s2.has(o3)).toEqual(true);
+      expect(s2.has(o4)).toEqual(true);
+      expect(s2.has(o5)).toEqual(true);
+    });
   });
 
   describe('object key', function() {
@@ -723,10 +749,19 @@ describe('Set', function() {
       set2 = set1.copy();
 
       set2.add(o4, o5);
-      expect(set2.size()).toEqual(5);
 
+      expect(set2.size()).toEqual(5);
       expect(set2.has(o1)).toEqual(true);
       expect(set2.has(o2)).toEqual(true);
+      expect(set2.has(o3)).toEqual(true);
+      expect(set2.has(o4)).toEqual(true);
+      expect(set2.has(o5)).toEqual(true);
+
+      set2 = set1.copy([o3, o3, o4, o5, o5]);
+
+      expect(set2.size()).toEqual(3);
+      expect(set2.has(o1)).toEqual(false);
+      expect(set2.has(o2)).toEqual(false);
       expect(set2.has(o3)).toEqual(true);
       expect(set2.has(o4)).toEqual(true);
       expect(set2.has(o5)).toEqual(true);
@@ -734,11 +769,100 @@ describe('Set', function() {
   });
 
   describe('static set operations', function() {
-    it('can perform a union of two sets', function() {
-
+    it('can perform a union of two sets of numbers', function() {
+      var s = swiftSet.Set;
+      expect(s.union([1, 2, 3], [4, 5])).toContain(1);
+      expect(s.union([1, 2, 3], [4, 5])).toContain(2);
+      expect(s.union([1, 2, 3], [4, 5])).toContain(3);
+      expect(s.union([1, 2, 3], [4, 5])).toContain(4);
+      expect(s.union([1, 2, 3], [4, 5])).toContain(5);
     });
-    
+    it('can perform an intersection of two sets', function() {
+      var s = swiftSet.Set;
+      expect(s.intersection([1, 2, 3], [3, 4, 5])).not.toContain(1);
+      expect(s.intersection([1, 2, 3], [3, 4, 5])).not.toContain(2);
+      expect(s.intersection([1, 2, 3], [3, 4, 5])).toContain(3);
+      expect(s.intersection([1, 2, 3], [3, 4, 5])).not.toContain(4);
+      expect(s.intersection([1, 2, 3], [3, 4, 5])).not.toContain(5);
+    });
+    it('can perform a difference of two sets', function() {
+      var s = swiftSet.Set;
+      expect(s.difference([1, 2, 3], [3, 4, 5])).toContain(1);
+      expect(s.difference([1, 2, 3], [3, 4, 5])).toContain(2);
+      expect(s.difference([1, 2, 3], [3, 4, 5])).not.toContain(3);
+      expect(s.difference([1, 2, 3], [3, 4, 5])).toContain(4);
+      expect(s.difference([1, 2, 3], [3, 4, 5])).toContain(5);
+    });
+    it('can perform a complement of two sets', function() {
+      var s = swiftSet.Set;
+      expect(s.complement([1, 2, 3], [3, 4, 5])).toContain(1);
+      expect(s.complement([1, 2, 3], [3, 4, 5])).toContain(2);
+      expect(s.complement([1, 2, 3], [3, 4, 5])).not.toContain(3);
+      expect(s.complement([1, 2, 3], [3, 4, 5])).not.toContain(4);
+      expect(s.complement([1, 2, 3], [3, 4, 5])).not.toContain(5);
+    });
+    it('can determine set equality', function() {
+      var s = swiftSet.Set;
+      expect(s.equals([1, 2, 3, 3], [1, 1, 2, 2, 3])).toEqual(true);
+      expect(s.equals([1, 2, 3], [3, 4, 5])).toEqual(false);
+    });
   });
+
+  describe('static set operations', function() {
+    var o1 = {id: 1},
+    o2 = {id:2},
+    o3 = {id:3},
+    o4 = {id:4},
+    o5 = {id:5};
+
+    beforeEach(function() {
+      Set.pushUid(function() { return this.id; });
+    });
+
+    afterEach(function() {
+      Set.popUid();
+    });
+
+    it('can perform a union of two sets of objects', function() {
+      var s = swiftSet.Set;
+      expect(s.union([o1, o1, o3], [o4, o5])).toContain(o1);
+      expect(s.union([o1, o2, o3], [o4, o5])).toContain(o2);
+      expect(s.union([o1, o2, o3], [o4, o5])).toContain(o3);
+      expect(s.union([o1, o2, o3], [o4, o5])).toContain(o4);
+      expect(s.union([o1, o2, o3], [o4, o5])).toContain(o5);
+    });
+    it('can perform an intersection of two sets', function() {
+      var s = swiftSet.Set;
+      expect(s.intersection([o1, o2, o3], [o3, o4, o5])).not.toContain(o1);
+      expect(s.intersection([o1, o2, o3], [o3, o4, o5])).not.toContain(o2);
+      expect(s.intersection([o1, o2, o3], [o3, o4, o5])).toContain(o3);
+      expect(s.intersection([o1, o2, o3], [o3, o4, o5])).not.toContain(o4);
+      expect(s.intersection([o1, o2, o3], [o3, o4, o5])).not.toContain(o5);
+    });
+    it('can perform a difference of two sets', function() {
+      var s = swiftSet.Set;
+      expect(s.difference([o1, o2, o3], [o3, o4, o5])).toContain(o1);
+      expect(s.difference([o1, o2, o3], [o3, o4, o5])).toContain(o2);
+      expect(s.difference([o1, o2, o3], [o3, o4, o5])).not.toContain(o3);
+      expect(s.difference([o1, o2, o3], [o3, o4, o5])).toContain(o4);
+      expect(s.difference([o1, o2, o3], [o3, o4, o5])).toContain(o5);
+    });
+    it('can perform a complement of two sets', function() {
+      var s = swiftSet.Set;
+      expect(s.complement([o1, o2, o3], [o3, o4, o5])).toContain(o1);
+      expect(s.complement([o1, o2, o3], [o3, o4, o5])).toContain(o2);
+      expect(s.complement([o1, o2, o3], [o3, o4, o5])).not.toContain(o3);
+      expect(s.complement([o1, o2, o3], [o3, o4, o5])).not.toContain(o4);
+      expect(s.complement([o1, o2, o3], [o3, o4, o5])).not.toContain(o5);
+    });
+    it('can determine set equality', function() {
+      var s = swiftSet.Set;
+      expect(s.equals([o1, o2, o3, o3], [o1, o1, o2, o2, o3])).toEqual(true);
+      expect(s.equals([o1, o2, o3], [o3, o4, o5])).toEqual(false);
+    });
+  });
+
+
 });
 
 })(window.swiftSet, undefined);

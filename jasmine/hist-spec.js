@@ -254,6 +254,51 @@ describe('Histogram', function() {
       expect(hist1.min()).toEqual(1);
       expect(hist1.max()).toEqual(4);
     });
+
+    it('can clear a histogram and initialize it with new values', function() {
+      var
+      o1 = { id: 1 },
+      o2 = { id: 2 },
+      o3 = { id: 3 },
+      o4 = { id: 4 },
+      o5 = { id: 5 },
+      a = [o1, o1, o2, o3, o3],
+      b = [o2, o2, o3, o4, o5],
+      h1 = new Histogram(a, 'id'), h2;
+
+      expect(h1.size()).toEqual(3);
+      expect(h1.total()).toEqual(5);
+      expect(h1.min()).toEqual(1);
+      expect(h1.max()).toEqual(2);
+      expect(h1.freq(o1)).toEqual(2);
+      expect(h1.freq(o2)).toEqual(1);
+      expect(h1.freq(o3)).toEqual(2);
+
+      h2 = h1.copy().clear(b);
+
+      expect(h2.size()).toEqual(4);
+      expect(h2.total()).toEqual(5);
+      expect(h2.min()).toEqual(1);
+      expect(h2.max()).toEqual(2);
+      expect(h2.freq(o1)).toEqual(0);
+      expect(h2.freq(o2)).toEqual(2);
+      expect(h2.freq(o3)).toEqual(1);
+      expect(h2.freq(o4)).toEqual(1);
+      expect(h2.freq(o5)).toEqual(1);
+
+      h2.clear();
+      
+      expect(h2.size()).toEqual(0);
+      expect(h2.total()).toEqual(0);
+      expect(h2.min()).toEqual(0);
+      expect(h2.max()).toEqual(0);
+      expect(h2.freq(o1)).toEqual(0);
+      expect(h2.freq(o2)).toEqual(2);
+      expect(h2.freq(o3)).toEqual(1);
+      expect(h2.freq(o4)).toEqual(1);
+      expect(h2.freq(o5)).toEqual(1);
+
+    });
   });
   
   describe('object key', function() {
@@ -629,7 +674,29 @@ describe('Histogram', function() {
       expect(hist2.freq(o3)).toEqual(3);
       expect(hist2.freq(o4)).toEqual(1);
       expect(hist2.freq(o5)).toEqual(1);
+
+      hist2 = hist1.copy([o3, o3, o4, o4, o5]);
+
+      expect(hist2.size()).toEqual(3);
+      expect(hist2.total()).toEqual(5);
+      expect(hist2.min()).toEqual(1);
+      expect(hist2.max()).toEqual(2);
+
+      expect(hist2.has(o1)).toEqual(false);
+      expect(hist2.has(o2)).toEqual(false);
+      expect(hist2.has(o3)).toEqual(true);
+      expect(hist2.has(o4)).toEqual(true);
+      expect(hist2.has(o5)).toEqual(true);
+
+      expect(hist2.freq(o1)).toEqual(0);
+      expect(hist2.freq(o2)).toEqual(0);
+      expect(hist2.freq(o3)).toEqual(2);
+      expect(hist2.freq(o4)).toEqual(2);
+      expect(hist2.freq(o5)).toEqual(1);
     });
+  });
+
+  describe('clear', function() {
   });
 });
 
