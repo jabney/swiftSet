@@ -698,19 +698,19 @@ When performing a `union` all frequencies are valid, so all the items are return
 
 `return true` `=>` `[1, 2, 3, 4]`
 
-When performing an `intersection` only items with a frequency of three are returned in the output.
+When performing an `intersection` only items with a frequency of `3` are returned in the output.
 
 `return freq === 3` `=>` `[2, 3]`
 
-When performing a `difference` only items with frequencies less than three are returned.
+When performing a `difference` only items with frequencies less than `3` are returned.
 
 `return freq < 3` `=>` `[1, 4]`
 
-When performing a `complement` only items with a frequency of one are returned.
+When performing a `complement` only items with a frequency of `1` are returned.
 
 `return freq === 1` `=>` `[1]`
 
-The `equals` operation returns true if the `min` frequency and the `max` frequency are both three. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it analyzes the merged histogram to determine the `min` and `max` frequencies of the items.
+The `equals` operation returns true if the `min` frequency and the `max` frequency are both `3`. Equivalent sets have the same items, hence the same frequencies after the merge. `equals` doesn't use an evaluator, rather it analyzes the merged histogram to determine the `min` and `max` frequencies of the items.
 
 ```javascript
 var
