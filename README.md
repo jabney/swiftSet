@@ -132,6 +132,8 @@ a.equals([1, 2, 2, 3, 3]); // => true
 a.equals(b); // => false
 ```
 
+**Note:** Set operations do not modify the set they're called on. Rather the output of a set operation is a new array containing the results of the operation. If you need a `Set` object comprised of the results from a set operation, create a new set and pass the output of an operation: `var c = new Set(a.intersection(b));`
+
 #### Sets of Objects
 Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness in order to differentiate it from other objects. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
 
@@ -442,7 +444,7 @@ Set.equals(a, b); // => false
 Set.equals(a, [1, 2, 2, 3]); // => true
 ```
 
-Objects can be used with these operations as long as they have their own `toString` method, or are wrapped. Objects using one of these two strategies will also work for mixing various object types within a single set. .
+Objects can be used with these operations as long as they have their own `toString` method, or are wrapped. (Objects using one of these two strategies will also work for mixing various object types within a single set.) For information on how to set a global key retriever for static set operations, see [Setting A Global Uid Method For Static Set Operations](#setting-a-global-uid-method-for-static-set-operations).
 
 ```javascript
 var
@@ -567,6 +569,7 @@ Set.popUid();
 
 Set.complement([1, 2, 3], [2, 3, 4]); // => [1]
 ```
+**Note:** While every call to `Set.pushUid` should be accompanied with a compelementary call to `Set.popUid` as a matter of practice, it's not possible to break things by calling `Set.popUid` too many times. The default `uid` method is preserved on the stack regardless of how many times `Set.popUid` is called.
 
 ### How `Set` uses `Histogram` For Fast Operations
 As the name implies, `swiftSet.js` is _swift_. Operations are fast even for large arrays. `Set` operations make use of two discrete-value histograms which are merged together to get a complete picture of one set's relation to the other. 
