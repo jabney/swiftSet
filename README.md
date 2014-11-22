@@ -106,7 +106,7 @@ a.clear(b); // => (3, 4, 5)
 
 // If a string is passed to the constructor, it is 
 // automatically converted to a character array.
-a = new Set('abcacbbacbcacabcba').items.sort() // => ['a', 'b', 'c']
+a = new Set('abcacbbacbcacabcba').items().sort() // => ['a', 'b', 'c']
 ```
 
 #### Set Operations
