@@ -189,8 +189,9 @@ function Set(a, key) {
   };
 
   // Returns a copy of this set.
-  this.copy = function() {
-    return new Set(cachedItems, key);
+  this.copy = function(b) {
+    return b ? new Set(b, key) :
+      new Set(cachedItems, key);
   };
 
   // The number of unique elements in the set.
@@ -498,9 +499,11 @@ function Histogram(items, key) {
     return this;
   };
 
-  // Returns a copy of this histogram.
-  this.copy = function() {
-    return new Histogram(null, key).merge(this);
+  // Return a copy of this histogram. If b is given, the copy
+  // will have those values instead.
+  this.copy = function(b) {
+    return b ? new Histogram(b, key) :
+      new Histogram(null, key).merge(this);
   };
 
   // By default, sets all the histogram's frequencies to 1. If 'freq' 
