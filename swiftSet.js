@@ -203,10 +203,10 @@ function Set(a, key) {
     return hist.has(item);
   };
 
-  // Remove all items from a set.
+  // Remove all items from a set. Add mew values if given.
   // TODO: unit tests.
-  this.clear = function() {
-    hist.clear();
+  this.clear = function(a) {
+    hist.clear(a);
     cachedItems = [];
     return this;
   };
@@ -555,14 +555,17 @@ function Histogram(items, key) {
     return this;
   };
 
-  // Clear the histogram of all items.
+  // Clear the histogram of all items. Add array of
+  // new items if given.
   // TODO: unit tests.
-  this.clear = function() {
-    hist = Object.create(null);
-    _length = 0;
-    _max = 0;
+  this.clear = function(a) {
+    a ? this.addItems(a) :
+      (hist = Object.create(null)),
+      _length = 0,
+      _max = 0;
     return this;
-  }
+  };
+
 }
 
 // Helpers
