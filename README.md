@@ -370,7 +370,7 @@ set.items().map(function(item) {
 ```
 
 ##### How The Wrapper Works
-`Set.wrapObj()` creates a wrapper object with two properties: an `item` property which hods the original value of the item and a `toString` method that encodes the value's type as part of its key.
+`Set.wrapObj()` creates a wrapper object with two properties: an `item` property which holds the original value of the item and a `toString` method that encodes the value's type as part of its key.
 
 ```javascript
 
@@ -487,7 +487,7 @@ Set.equals(a, [{id:1}, {id:2}, {id:3}]); // => true
 However it might be desirable use a global method for key retrieval on whole sets of custom objects. See [Setting A Global Uid Method For Static Set Operations](#setting-a-global-uid-method-for-static-set-operations) for more information.
 
 ##### Setting A Global Uid Method For Static Set Operations
-By default, static set operations use an identity function, `uid`, that just returns the given item for use as a key. This is suitable for sets of values that are all strings or all numbers. In order to use static set operations with sets of custom objects, the default key method, an identity function, can be overridden. This is accomplished using `Set.pushUid` and `Set.popUId`. By pushing a new `uid` method onto the stack, the default identity function can be superceded. This system allows multiple `uid` methods to be pushed and popped as necessary to work with sets of custom objects.
+By default, static set operations use an identity function, `uid`, that just returns the given item for use as a key. This is suitable for sets of values that are all strings or all numbers. In order to use static set operations with sets of custom objects, the default key method, an identity function, can be overridden. This is accomplished using `Set.pushUid` and `Set.popUid`. By pushing a new `uid` method onto the stack, the default identity function can be superceded. This system allows multiple `uid` methods to be pushed and popped as necessary to work with sets of custom objects.
 
 ```javascript
 var
@@ -518,7 +518,7 @@ Set.popUid();
 
 ```
 
-If only one type of custom object is being used throughout a given project, it's not strictly necessary to call `Set.popUId`, but it's good housekeeping in general. However if set operations need to be used in different contexts and with different custom objects, it's not only helpful but necessary to do this.
+If only one type of custom object is being used throughout a given project, it's not strictly necessary to call `Set.popUid`, but it's good housekeeping in general. However if set operations need to be used in different contexts and with different custom objects, it's not only helpful but necessary to do this.
 
 ```javascript
 var
