@@ -1,7 +1,7 @@
 
 (function(swiftSet) { 
 'use strict';
-function version() { return 'swiftSet v0.9.13 MIT License © 2014 James Abney http://github.com/jabney/swiftSet'; }
+function version() { return 'swiftSet v0.9.14 MIT License © 2014 James Abney http://github.com/jabney/swiftSet'; }
 
 // ---------------------------------------------------------------
 // Set and Histogram - the Histogram is the backing object for
