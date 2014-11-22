@@ -559,10 +559,10 @@ function Histogram(items, key) {
   // new items if given.
   // TODO: unit tests.
   this.clear = function(a) {
-    a ? this.addItems(a) :
-      (hist = Object.create(null)),
-      _length = 0,
-      _max = 0;
+    hist = Object.create(null);
+    _length = 0;
+    _max = 0;
+    a && this.addItems(a);
     return this;
   };
 
