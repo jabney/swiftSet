@@ -458,17 +458,17 @@ function Histogram(items, key) {
   // Add a single item to the histogram. If 'freq' is specified,
   // set the item's frequency; this facilitates the merge operation.
   function add(item, freq) {
-    var key = uid(item),
+    var key = uid(item), entry = hist[key],
     freq = typeof freq === 'undefined' ? 1 : freq;
     // If the entry already exists, update the frequency.
-    if (hist[key]) {
-      hist[key].freq += freq;
+    if (entry) {
+      entry.freq += freq;
     // Otherwise create a new entry and update the length.
     } else {
-      hist[key] = { item: item, freq: freq };
+      hist[key] = entry = { item: item, freq: freq };
       _length++;
     }
-    _max = Math.max(_max, hist[key].freq);
+    _max = Math.max(_max, entry.freq);
     return this;
   }
 
