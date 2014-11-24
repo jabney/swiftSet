@@ -26,7 +26,7 @@ encodeObjType = (function() {
   typeOf = (function() {
     var reType = /\[object (\w+)\]/; 
     return function(obj) {
-      return reType.exec(Object.prototype.toString.call(obj))[1];
+      return reType.exec(toString.call(obj))[1];
     };
   })(),
 
