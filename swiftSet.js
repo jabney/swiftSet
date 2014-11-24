@@ -43,8 +43,9 @@ encodeObjType = (function() {
   // Encode an object's type as a unique number. If the type code
   // is not defined, return the type name.
   return function encodeObjType(obj) {
-    var type = typeOf(obj);
-    return codes[type] || type;
+    var type = typeOf(obj),
+    code = codes[type];
+    return code === undefined ? type : code;
   }
 
 })();
