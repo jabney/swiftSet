@@ -208,7 +208,7 @@ function Set(a, key) {
   // TODO: unit tests.
   this.clear = function(a) {
     hist.clear(a);
-    cachedItems = [];
+    cachedItems = hist.items();
     return this;
   };
 
