@@ -210,11 +210,11 @@ Set.prototype = {
 
   // Map items in this set to another array of the same length.
   map: function(action, context) {
-    var out = [];
+    var map = [];
     this.each(function(item) {
-      out.push(action.call(this, item));
+      map.push(action.call(this, item));
     }, context);
-    return out;
+    return map;
   },
 
   // Return the items in this set.
