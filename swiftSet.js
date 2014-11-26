@@ -96,9 +96,9 @@ function isWrapped(obj) {
 //
 // var toStr = function() { return this.id; },
 // t1 = {id: 1, toString: toStr}, t2 = {id:2, toString: toStr},
-// set = new Set([t1, t2]); // (o1, o2) 
+// set = new Set([t1, t2]); // (t1, t2) 
 //
-// set.has(t1); // => true
+// set.items(); // => [t1, t2]
 // 
 // var o1 = {id: 1}, o2 = {id: 2}, o3 = {id: 3},
 // hashFn = function() { return this.id; },
@@ -147,6 +147,7 @@ function Set(a, hashFn) {
   };
 
   // Make this set mutable.
+  // TODO: unit test.
   this.mutable = function() {
     mutable = true;
     return this;
@@ -306,7 +307,7 @@ Set.prototype = {
   // Returns true if given set is equivalent to this set. 
   equals: function(b) {
     var h = this.process(b), k,
-    max = 0, min = Math.pow(2, 53);
+    max = 0, min = Infinity;
     for (k in h) {
       max = Math.max(max, h[k].freq);
       min = Math.min(min, h[k].freq);
@@ -429,7 +430,7 @@ Set.prototype = {
   // Set.equals([1, 1, 2], [1, 2, 2]) => true
   // Set.equals([1, 1, 2], [1, 2, 3]) => false
   Set.equals = function(a, b) {
-    var max = 0, min = Math.pow(2, 53), key,
+    var max = 0, min = Infinity, key,
       hist = Set.process(a, b);
     for (var key in hist) {
       max = Math.max(max, hist[key].freq);
