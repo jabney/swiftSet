@@ -169,7 +169,6 @@ Set.prototype = {
         entry.item = arg;
         entry.freq = 1;
         this.hist[key] = entry;
-        ;
       }
     }, this);
     return this;
