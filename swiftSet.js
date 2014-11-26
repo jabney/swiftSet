@@ -75,10 +75,11 @@ function isWrapped(obj) {
 //
 // Example usage: 
 //
-// var set = new Set([1, 1, 2, 3, 3, 3]).has(2) => true
-// var set = new Set([1, 1, 2, 3, 3, 3]).size() => 3
-// var set = new Set([1, 1, 2, 3, 3, 3]).add(4, 5) // (1, 2, 3, 4, 5)
-// var set = new Set([1, 1, 2, 3, 3, 3]).remove(3, 4) // (1, 2, 5)
+// var set = new Set([1, 1, 2, 3, 3, 3]); // (1, 2, 3)
+// set.has(2); // => true
+// set.size(); // => 3
+// set.add(4, 5); // (1, 2, 3, 4, 5)
+// set.remove(3, 4) // (1, 2, 5)
 // 
 // Set Operations Example:
 // 
