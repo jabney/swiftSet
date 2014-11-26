@@ -1,7 +1,7 @@
 
 (function(swiftSet) { 
 'use strict';
-function version() { return 'swiftSet v0.9.15 MIT License © 2014 James Abney http://github.com/jabney/swiftSet'; }
+function version() { return 'swiftSet v0.10.1 MIT License © 2014 James Abney http://github.com/jabney/swiftSet'; }
 
 // ---------------------------------------------------------------
 // swiftSet.js - Store unique items and perform fast set operations.
@@ -77,28 +77,35 @@ function isWrapped(obj) {
 //
 // var set = new Set([1, 1, 2, 3, 3, 3]).has(2) => true
 // var set = new Set([1, 1, 2, 3, 3, 3]).size() => 3
-// var set = new Set([1, 1, 2, 3, 3, 3]).add(4) // (1, 2, 3, 4)
-// var set = new Set([1, 1, 2, 3, 3, 3]).remove(3) // (1, 2, 4)
+// var set = new Set([1, 1, 2, 3, 3, 3]).add(4, 5) // (1, 2, 3, 4, 5)
+// var set = new Set([1, 1, 2, 3, 3, 3]).remove(3, 4) // (1, 2, 5)
 // 
 // Set Operations Example:
 // 
-// var set = new Set([1, 1, 2, 3, 3, 3]);
-// set.intersection([2, 2, 3, 3, 4]); => [2, 3]
+// var set = new Set([1, 1, 2, 3, 3, 3]); // (1, 2, 3)
+// set.intersection([2, 2, 3, 3, 4]); // => [2, 3]
 // 
 // Arrays of objects can also be processed as sets, but they must
 // have a way to return a unique value. One option is to add a
 // toString method to your objects which returns some unique id; this
 // gets converted into a key implicitly when the object is added to
-// the set. If that's not an option, include  a 'key' value or function 
-// on your objects which returns a unique value. If either of these 
-// exist, they'll be used as keys when items are added to the set.
+// the set. Alternately a global key-retrieving function can be
+// passed to the constructor.
 //
 // Examples:
 //
-// {toString: function() { return "a7ff"; }}
-// {id: 56, toString: function() { return this.id; }}
-// {uid: 59}
-// {id: f9de, uid: funciton() { return this.id; }}
+// var toStr = function() { return this.id; },
+// t1 = {id: 1, toString: toStr}, t2 = {id:2, toString: toStr},
+// set = new Set([t1, t2]); // (o1, o2) 
+//
+// set.has(t1); // => true
+// 
+// var o1 = {id: 1}, o2 = {id: 2}, o3 = {id: 3},
+// hashFn = function() { return this.id; },
+// set = new Set([o1, o2, o3], hashFn); // (o1, o2, o3)
+//
+// set.items(); // => [o1, o2, o3]
+//
 // ---------------------------------------------------------------
 
 function Set(a, hashFn) {
