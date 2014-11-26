@@ -11,14 +11,21 @@ function key() {
   return this.id;
 }
 
+var
+
+t1 = { id: 't1', toString: key },
+t2 = { id: 't2', toString: key },
+t3 = { id: 't3', toString: key },
+t4 = { id: 't4', toString: key },
+t5 = { id: 't5', toString: key },
+
+o1 = { id: 'o1' },
+o2 = { id: 'o2' },
+o3 = { id: 'o3' },
+o4 = { id: 'o4' },
+o5 = { id: 'o5' };
+
 describe('Set', function() {
-  var
-    o1 = { id: 'o1', hkey: key }, 
-    o2 = { id: 'o2', hkey: key }, 
-    o3 = { id: 'o3', hkey: key }, 
-    o4 = { id: 'o4', hkey: key }, 
-    o5 = { id: 'o5', hkey: key }
-  ;
 
   beforeEach(function() {
 
@@ -49,13 +56,13 @@ describe('Set', function() {
     });
 
     it('creates an accurate set of objects', function() {
-      var obj = [o1, o1, o2, o2, o3, o3];
+      var obj = [t1, t1, t2, t2, t3, t3];
       var set = new Set(obj);
 
-      expect(set.has(o4)).toBe(false);
-      expect(set.has(o1)).toBe(true);
-      expect(set.has(o2)).toBe(true);
-      expect(set.has(o3)).toBe(true);
+      expect(set.has(t4)).toBe(false);
+      expect(set.has(t1)).toBe(true);
+      expect(set.has(t2)).toBe(true);
+      expect(set.has(t3)).toBe(true);
       expect(set.size()).toEqual(3);
     });
 
@@ -145,62 +152,57 @@ describe('Set', function() {
     });
 
     it('accurately adds and removes one or more objects', function() {
-      var obj = [o1, o2, o2, o3, o3, o3];
+      var obj = [t1, t2, t2, t3, t3, t3];
       var set = new Set(obj);
     
-      set.add(o3).add(o4, o5)
-        .remove(o1, o2);
+      set.add(t3).add(t4, t5)
+        .remove(t1, t2);
 
-      expect(set.has(o1)).toBe(false);
-      expect(set.has(o2)).toBe(false);
-      expect(set.has(o3)).toBe(true);
-      expect(set.has(o4)).toBe(true);
-      expect(set.has(o5)).toBe(true);
+      expect(set.has(t1)).toBe(false);
+      expect(set.has(t2)).toBe(false);
+      expect(set.has(t3)).toBe(true);
+      expect(set.has(t4)).toBe(true);
+      expect(set.has(t5)).toBe(true);
       expect(set.size()).toEqual(3);
 
-      expect(set.items()).not.toContain(o1);
-      expect(set.items()).not.toContain(o2);
-      expect(set.items()).toContain(o3);
-      expect(set.items()).toContain(o4);
-      expect(set.items()).toContain(o5);
+      expect(set.items()).not.toContain(t1);
+      expect(set.items()).not.toContain(t2);
+      expect(set.items()).toContain(t3);
+      expect(set.items()).toContain(t4);
+      expect(set.items()).toContain(t5);
       expect(set.items().length).toEqual(3);
       
       set = new Set(obj)
-        .addItems([o3, o4, o4, o5, o5])
-        .removeItems([o1, o2]);
+        .addItems([t3, t4, t4, t5, t5])
+        .removeItems([t1, t2]);
 
-      expect(set.has(o1)).toBe(false);
-      expect(set.has(o2)).toBe(false);
-      expect(set.has(o3)).toBe(true);
-      expect(set.has(o4)).toBe(true);
-      expect(set.has(o5)).toBe(true);
+      expect(set.has(t1)).toBe(false);
+      expect(set.has(t2)).toBe(false);
+      expect(set.has(t3)).toBe(true);
+      expect(set.has(t4)).toBe(true);
+      expect(set.has(t5)).toBe(true);
       expect(set.size()).toEqual(3);
 
-      expect(set.items()).not.toContain(o1);
-      expect(set.items()).not.toContain(o2);
-      expect(set.items()).toContain(o3);
-      expect(set.items()).toContain(o4);
-      expect(set.items()).toContain(o5);
+      expect(set.items()).not.toContain(t1);
+      expect(set.items()).not.toContain(t2);
+      expect(set.items()).toContain(t3);
+      expect(set.items()).toContain(t4);
+      expect(set.items()).toContain(t5);
       expect(set.items().length).toEqual(3);
     });
 
     it('can clear a set and initialize it with new values', function() {
       var
-      o1 = { id: 1 },
-      o2 = { id: 2 },
-      o3 = { id: 3 },
-      o4 = { id: 4 },
-      o5 = { id: 5 },
       a = [o1, o1, o2, o3, o3],
       b = [o2, o2, o3, o4, o5],
-      s1 = new Set(a, 'id'), s2;
+      s1 = new Set(a, function() { return this.id; }), s2;
 
       expect(s1.size()).toEqual(3);
       expect(s1.has(o1)).toEqual(true);
       expect(s1.has(o2)).toEqual(true);
       expect(s1.has(o3)).toEqual(true);
 
-      s2 = s1.copy().clear(b);
+      s2 = s1.clone().clear(b);
 
       expect(s2.size()).toEqual(4);
       expect(s2.has(o1)).toEqual(false);
@@ -213,122 +215,21 @@ describe('Set', function() {
 
   describe('object key', function() {
 
-    describe('uses object key values and functions', function() {
-
-      it('uses "khey" as an object value property', function() {
-        var
-        o1 = { hkey: 'o1' }, 
-        o2 = { hkey: 'o2' }, 
-        o3 = { hkey: 'o3' }, 
-        o4 = { hkey: 'o4' }, 
-        o5 = { hkey: 'o5' },
-        set = new Set([o1, o2, o3, o4, o5]);
-
-        expect(set.has(o1)).toEqual(true);
-        expect(set.has(o2)).toEqual(true);
-        expect(set.has(o3)).toEqual(true);
-        expect(set.has(o4)).toEqual(true);
-        expect(set.has(o5)).toEqual(true);
-        expect(set.has({})).toEqual(false);
-        expect(set.size()).toEqual(5);
-      });
-
-      it('uses "hkey" as an object function property', function() {
-        var
-        o1 = { id: 'o1', hkey: key }, 
-        o2 = { id: 'o2', hkey: key }, 
-        o3 = { id: 'o3', hkey: key }, 
-        o4 = { id: 'o4', hkey: key }, 
-        o5 = { id: 'o5', hkey: key },
-        set = new Set([o1, o2, o3, o4, o5]);
-
-        expect(set.has(o1)).toEqual(true);
-        expect(set.has(o2)).toEqual(true);
-        expect(set.has(o3)).toEqual(true);
-        expect(set.has(o4)).toEqual(true);
-        expect(set.has(o5)).toEqual(true);
-        expect(set.has({})).toEqual(false);
-        expect(set.size()).toEqual(5);
-      });
-    });
-
-    describe('uses explicit key values and functions', function() {
-
-      it('uses custom key as an object property value', function() {
-        var
-        o1 = { myKey: 'o1' }, 
-        o2 = { myKey: 'o2' }, 
-        o3 = { myKey: 'o3' }, 
-        o4 = { myKey: 'o4' }, 
-        o5 = { myKey: 'o5' },
-        set = new Set([o1, o2, o3, o4, o5], 'myKey');
-
-        expect(set.has(o1)).toEqual(true);
-        expect(set.has(o2)).toEqual(true);
-        expect(set.has(o3)).toEqual(true);
-        expect(set.has(o4)).toEqual(true);
-        expect(set.has(o5)).toEqual(true);
-        expect(set.has({})).toEqual(false);
-        expect(set.size()).toEqual(5);
-      });
-
-      it('uses a custom function as a key retriever', function() {
-        var
-        myKey = function() { return this.id; },
-        o1 = { id: 'o1' }, 
-        o2 = { id: 'o2' }, 
-        o3 = { id: 'o3' }, 
-        o4 = { id: 'o4' }, 
-        o5 = { id: 'o5' },
-        set = new Set([o1, o2, o3, o4, o5], myKey);
-
-        expect(set.has(o1)).toEqual(true);
-        expect(set.has(o2)).toEqual(true);
-        expect(set.has(o3)).toEqual(true);
-        expect(set.has(o4)).toEqual(true);
-        expect(set.has(o5)).toEqual(true);
-        expect(set.has({})).toEqual(false);
-        expect(set.size()).toEqual(5);
-      });
-    });
-
     it('uses object toString method to implicity generate a key', function() {
       var
-      o1 = { id: 'v', toString: function() { return this.id; } }, 
-      o2 = { id: 'w', toString: function() { return this.id; } }, 
-      o3 = { id: 'x', toString: function() { return this.id; } }, 
-      o4 = { id: 'y', toString: function() { return this.id; } }, 
-      o5 = { id: 'z', toString: function() { return this.id; } },
-      set = new Set([o1, o2, o3, o4, o5]);
+      set = new Set([t1, t2, t3, t4, t5]);
 
-      expect(set.has(o1)).toEqual(true);
-      expect(set.has(o2)).toEqual(true);
-      expect(set.has(o3)).toEqual(true);
-      expect(set.has(o4)).toEqual(true);
-      expect(set.has(o5)).toEqual(true);
+      expect(set.has(t1)).toEqual(true);
+      expect(set.has(t2)).toEqual(true);
+      expect(set.has(t3)).toEqual(true);
+      expect(set.has(t4)).toEqual(true);
+      expect(set.has(t5)).toEqual(true);
       expect(set.has({})).toEqual(false);
       expect(set.size()).toEqual(5);
     });
   });
   
   describe('global key', function() {
-    var
-    o1 = { id: 1 },
-    o2 = { id: 2 },
-    o3 = { id: 3 },
-    o4 = { id: 4 },
-    o5 = { id: 5 };
-
-    it('uses an object value property', function() {
-      var set = new Set([o1, o2, o2, o3, o3, o3], 'id');
-
-      expect(set.size()).toEqual(3);
-
-      expect(set.has(o1)).toEqual(true);
-      expect(set.has(o2)).toEqual(true);
-      expect(set.has(o3)).toEqual(true);
-      expect(set.has(o4)).toEqual(false);
-    });
 
     it('uses an object function property', function() {
       var set = new Set([o1, o2, o2, o3, o3, o3], function() {
@@ -378,7 +279,7 @@ describe('Set', function() {
       set2 = new Set([7, 8, 9]),
       set3 = new Set([3, 4, 5]);
 
-      expect(set1.keyify()).toEqual('{7,8,9}');
+      expect(set1.keyify()).toEqual('{7:4,8:4,9:4}');
       expect(set1.keyify()).toEqual(set2.keyify());
       expect(set1.keyify()).not.toEqual(set3.keyify());
     });
@@ -388,17 +289,17 @@ describe('Set', function() {
         set2 = new Set(['7', '8', '9']),
         set3 = new Set(['3', '4', '5']);
 
-      expect(set1.keyify()).toEqual('{7,8,9}');
+      expect(set1.keyify()).toEqual('{7:5,8:5,9:5}');
       expect(set1.keyify()).toEqual(set2.keyify());
       expect(set1.keyify()).not.toEqual(set3.keyify());
     });
 
     it('generates a unique key for objects', function() {
-      var set1 = new Set([o1, o2, o2, o3, o3, o3]),
-        set2 = new Set([o1, o2, o2, o3, o3, o3]),
-        set3 = new Set([o3, o4, o5]);
+      var set1 = new Set([o1, o2, o2, o3, o3, o3], key),
+        set2 = new Set([o1, o2, o2, o3, o3, o3], key),
+        set3 = new Set([o3, o4, o5], key);
 
-      expect(set1.keyify()).toEqual('{o1,o2,o3}');
+      expect(set1.keyify()).toEqual('{o1:6,o2:6,o3:6}');
       expect(set1.keyify()).toEqual(set2.keyify());
       expect(set1.keyify()).not.toEqual(set3.keyify());
     });
@@ -450,8 +351,8 @@ describe('Set', function() {
   
   describe('mixed items', function() {
       var wrap = Set.wrapObj(), isWrapped = Set.isWrapped,
-      set1 = new Set([wrap(1), wrap(1), '1', wrap(2), '2', o1, o2]),
-      set2 = set1.copy();
+      set1 = new Set([wrap(1), wrap(1), '1', wrap(2), '2', t1, t2]),
+      set2 = set1.clone();
 
     it('can build a mixed set of numbers, strings, and objects', function() {
       var values;
@@ -462,9 +363,9 @@ describe('Set', function() {
       expect(set1.has('1')).toEqual(true);
       expect(set1.has(wrap(2))).toEqual(true);
       expect(set1.has('2')).toEqual(true);
-      expect(set1.has(o1)).toEqual(true);
-      expect(set1.has(wrap(o1))).toEqual(false);
-      expect(set1.has(o2)).toEqual(true);
+      expect(set1.has(t1)).toEqual(true);
+      expect(set1.has(wrap(t1))).toEqual(false);
+      expect(set1.has(t2)).toEqual(true);
       expect(set1.equals(set2)).toEqual(true);
 
       expect(set2.size()).toEqual(6);
@@ -473,9 +374,9 @@ describe('Set', function() {
       expect(set2.has('1')).toEqual(true);
       expect(set2.has(wrap(2))).toEqual(true);
       expect(set2.has('2')).toEqual(true);
-      expect(set2.has(o1)).toEqual(true);
-      expect(set2.has(wrap(o1))).toEqual(false);
-      expect(set2.has(o2)).toEqual(true);
+      expect(set2.has(t1)).toEqual(true);
+      expect(set2.has(wrap(t1))).toEqual(false);
+      expect(set2.has(t2)).toEqual(true);
       expect(set2.equals(set2)).toEqual(true);
 
       values = set1.items().map(function(item) {
@@ -486,8 +387,8 @@ describe('Set', function() {
       expect(values).toContain('1');
       expect(values).toContain(2);
       expect(values).toContain('2');
-      expect(values).toContain(o1);
-      expect(values).toContain(o2);
+      expect(values).toContain(t1);
+      expect(values).toContain(t2);
 
       values = set2.items().map(function(item) {
         return isWrapped(item) ? item.item : item;
@@ -497,17 +398,12 @@ describe('Set', function() {
       expect(values).toContain('1');
       expect(values).toContain(2);
       expect(values).toContain('2');
-      expect(values).toContain(o1);
-      expect(values).toContain(o2);
+      expect(values).toContain(t1);
+      expect(values).toContain(t2);
     });
 
     it('can use a custom toString method on a wrapper', function() {
       var
-      o1 = { id: 'o1' }, 
-      o2 = { id: 'o2' }, 
-      o3 = { id: 'o3' }, 
-      o4 = { id: 'o4' }, 
-      o5 = { id: 'o5' },
       wrap = Set.wrapObj(toStr),
       set = new Set([wrap(o1), wrap(o1), wrap(o2), wrap(o3)]);
       function toStr() { return this.item.id; }
@@ -526,8 +422,8 @@ describe('Set', function() {
       expect(values).toContain('1');
       expect(values).toContain(2);
       expect(values).toContain('2');
-      expect(values).toContain(o1);
-      expect(values).toContain(o2);
+      expect(values).toContain(t1);
+      expect(values).toContain(t2);
       expect(values.length).toEqual(6);
 
     });
@@ -670,106 +566,92 @@ describe('Set', function() {
   });
 
   describe('operations on objects', function() {
-    var set1 = new Set([o1, o2, o3]),
-    set2 = new Set([o2, o3, o4]);
+    var set1 = new Set([t1, t2, t3]),
+    set2 = new Set([t2, t3, t4]);
 
     it('can pefrom a proper union', function() {
 
-      expect(set1.union(set2)).toContain(o1);
-      expect(set1.union(set2)).toContain(o2);
-      expect(set1.union(set2)).toContain(o3);
-      expect(set1.union(set2)).toContain(o4);
+      expect(set1.union(set2)).toContain(t1);
+      expect(set1.union(set2)).toContain(t2);
+      expect(set1.union(set2)).toContain(t3);
+      expect(set1.union(set2)).toContain(t4);
       
-      expect(set1.union([o2, o3, o4])).toContain(o1);
-      expect(set1.union([o2, o3, o4])).toContain(o2);
-      expect(set1.union([o2, o3, o4])).toContain(o3);
-      expect(set1.union([o2, o3, o4])).toContain(o4);
+      expect(set1.union([t2, t3, t4])).toContain(t1);
+      expect(set1.union([t2, t3, t4])).toContain(t2);
+      expect(set1.union([t2, t3, t4])).toContain(t3);
+      expect(set1.union([t2, t3, t4])).toContain(t4);
     });
 
     it('can pefrom a proper intersection', function() {
 
-      expect(set1.intersection(set2)).not.toContain(o1);
-      expect(set1.intersection(set2)).toContain(o2);
-      expect(set1.intersection(set2)).toContain(o3);
-      expect(set1.intersection(set2)).not.toContain(o4);
+      expect(set1.intersection(set2)).not.toContain(t1);
+      expect(set1.intersection(set2)).toContain(t2);
+      expect(set1.intersection(set2)).toContain(t3);
+      expect(set1.intersection(set2)).not.toContain(t4);
       
-      expect(set1.intersection([o2, o3, o4])).not.toContain(o1);
-      expect(set1.intersection([o2, o3, o4])).toContain(o2);
-      expect(set1.intersection([o2, o3, o4])).toContain(o3);
-      expect(set1.intersection([o2, o3, o4])).not.toContain(o4);
+      expect(set1.intersection([t2, t3, t4])).not.toContain(t1);
+      expect(set1.intersection([t2, t3, t4])).toContain(t2);
+      expect(set1.intersection([t2, t3, t4])).toContain(t3);
+      expect(set1.intersection([t2, t3, t4])).not.toContain(t4);
     });
 
     it('can pefrom a proper difference', function() {
 
-      expect(set1.difference(set2)).toContain(o1);
-      expect(set1.difference(set2)).not.toContain(o2);
-      expect(set1.difference(set2)).not.toContain(o3);
-      expect(set1.difference(set2)).toContain(o4);
+      expect(set1.difference(set2)).toContain(t1);
+      expect(set1.difference(set2)).not.toContain(t2);
+      expect(set1.difference(set2)).not.toContain(t3);
+      expect(set1.difference(set2)).toContain(t4);
       
-      expect(set1.difference([o2, o3, o4])).toContain(o1);
-      expect(set1.difference([o2, o3, o4])).not.toContain(o2);
-      expect(set1.difference([o2, o3, o4])).not.toContain(o3);
-      expect(set1.difference([o2, o3, o4])).toContain(o4);
+      expect(set1.difference([t2, t3, t4])).toContain(t1);
+      expect(set1.difference([t2, t3, t4])).not.toContain(t2);
+      expect(set1.difference([t2, t3, t4])).not.toContain(t3);
+      expect(set1.difference([t2, t3, t4])).toContain(t4);
     });
 
     it('can pefrom a proper complement', function() {
 
-      expect(set1.complement(set2)).toContain(o1);
-      expect(set1.complement(set2)).not.toContain(o2);
-      expect(set1.complement(set2)).not.toContain(o3);
-      expect(set1.complement(set2)).not.toContain(o4);
+      expect(set1.complement(set2)).toContain(t1);
+      expect(set1.complement(set2)).not.toContain(t2);
+      expect(set1.complement(set2)).not.toContain(t3);
+      expect(set1.complement(set2)).not.toContain(t4);
       
-      expect(set1.complement([o2, o3, o4])).toContain(o1);
-      expect(set1.complement([o2, o3, o4])).not.toContain(o2);
-      expect(set1.complement([o2, o3, o4])).not.toContain(o3);
-      expect(set1.complement([o2, o3, o4])).not.toContain(o4);
+      expect(set1.complement([t2, t3, t4])).toContain(t1);
+      expect(set1.complement([t2, t3, t4])).not.toContain(t2);
+      expect(set1.complement([t2, t3, t4])).not.toContain(t3);
+      expect(set1.complement([t2, t3, t4])).not.toContain(t4);
     });
 
     it('can determine set equivalence', function() {
-      var set1 = new Set([o1, o1, o2, o2, o3, o3]),
-      set2 = new Set([o1, o2, o3]),
-      set3 = new Set([o2, o3, o4]);
+      var set1 = new Set([t1, t1, t2, t2, t3, t3]),
+      set2 = new Set([t1, t2, t3]),
+      set3 = new Set([t2, t3, t4]);
 
       expect(set1.equals(set2)).toEqual(true);
-      expect(set1.equals([o1, o2, o3])).toEqual(true);
+      expect(set1.equals([t1, t2, t3])).toEqual(true);
       expect(set1.equals(set3)).toEqual(false);
-      expect(set1.equals([o2, o3, o4])).toEqual(false);
+      expect(set1.equals([t2, t3, t4])).toEqual(false);
     });
   });
 
-  describe('copy', function() {
-    it('can reliably copy a set', function() {
+  describe('clone method', function() {
+
+    it('can reliably clone a set', function() {
       var
-      o1 = { id: 1 },
-      o2 = { id: 2 },
-      o3 = { id: 3 },
-      o4 = { id: 4 },
-      o5 = { id: 5 },
-      set1 = new Set([o1, o2, o2, o3, o3, o3], 'id'),
-      set2 = set1.copy();
+      set1 = new Set([o1, o2, o2, o3, o3, o3], key),
+      set2 = set1.clone();
 
       set2.add(o4, o5);
-
       expect(set2.size()).toEqual(5);
       expect(set2.has(o1)).toEqual(true);
       expect(set2.has(o2)).toEqual(true);
       expect(set2.has(o3)).toEqual(true);
       expect(set2.has(o4)).toEqual(true);
       expect(set2.has(o5)).toEqual(true);
-
-      set2 = set1.copy([o3, o3, o4, o5, o5]);
-
-      expect(set2.size()).toEqual(3);
-      expect(set2.has(o1)).toEqual(false);
-      expect(set2.has(o2)).toEqual(false);
-      expect(set2.has(o3)).toEqual(true);
-      expect(set2.has(o4)).toEqual(true);
-      expect(set2.has(o5)).toEqual(true);
     });
   });
 
-  describe('static set operations', function() {
-    it('can perform a union of two sets of numbers', function() {
+  describe('static set operations on numbers', function() {
+    it('can perform a union of two sets', function() {
       var s = swiftSet.Set;
       expect(s.union([1, 2, 3], [4, 5])).toContain(1);
       expect(s.union([1, 2, 3], [4, 5])).toContain(2);
@@ -808,22 +690,17 @@ describe('Set', function() {
     });
   });
 
-  describe('static set operations', function() {
-    var o1 = {id: 1},
-    o2 = {id:2},
-    o3 = {id:3},
-    o4 = {id:4},
-    o5 = {id:5};
+  describe('static set operations on objects', function() {
 
     beforeEach(function() {
-      Set.pushUid(function() { return this.id; });
+      Set.pushUid(key);
     });
 
     afterEach(function() {
       Set.popUid();
     });
 
-    it('can perform a union of two sets of objects', function() {
+    it('can perform a union of two sets', function() {
       var s = swiftSet.Set;
       expect(s.union([o1, o1, o3], [o4, o5])).toContain(o1);
       expect(s.union([o1, o2, o3], [o4, o5])).toContain(o2);
