@@ -54,7 +54,7 @@ function Wrapper(obj, toStr) {
 }
 
 // Wrap an object so that it kas a key according to its type and value.
-// Use: var wrap = wrapObj(); wrap(1); => {value: 1, toString: function(){...}}
+// Use: var wrap = wrapObj(); wrap(1); => {item: 1, toString: function(){...}}
 function wrapObj(toStr) {
   return function(obj) {
     return new Wrapper(obj, toStr);
@@ -258,7 +258,7 @@ Set.prototype = {
     return this.items().length;
   },
 
-  // Determines if a value is present in the set.
+  // Determines if an item is present in the set.
   has: function(item) {
     var key = this.uid.call(item),
     item = this.hist[key] && this.hist[key].item;
@@ -296,7 +296,7 @@ Set.prototype = {
   },
 
   // Relative complement. The set of items from 'a' except where
-  // the value is also in 'b' (a minus b).
+  // the item is also in 'b' (a minus b).
   complement: function(b) {
     return this.process(b, function(freq) {
       return freq == 1;
@@ -364,26 +364,26 @@ Set.prototype = {
   // a set union, based on frequencies in the histogram. 
   Set.process = function(a, b, evaluator) {
     var hist = Object.create(null), out = [], ukey, k;
-    a.forEach(function(value) {
-      ukey = uid.call(value);
+    a.forEach(function(item) {
+      ukey = uid.call(item);
       if(!hist[ukey]) {
-        hist[ukey] = { value: value, freq: 1 };
+        hist[ukey] = { item: item, freq: 1 };
       }
     });
     // Merge b into the histogram.
-    b.forEach(function(value) {
-      ukey = uid.call(value);
+    b.forEach(function(item) {
+      ukey = uid.call(item);
       if (hist[ukey]) {
         if (hist[ukey].freq === 1)
           hist[ukey].freq = 3;
       } else {
-        hist[ukey] = { value: value, freq: 2 };
+        hist[ukey] = { item: item, freq: 2 };
       }
     });
     // Call the given evaluator.
     if (evaluator) {
       for (k in hist) {
-        if (evaluator(hist[k].freq)) out.push(hist[k].value);
+        if (evaluator(hist[k].freq)) out.push(hist[k].item);
       }
       return out;
     } else {
