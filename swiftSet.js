@@ -4,13 +4,8 @@
 function version() { return 'swiftSet v0.9.15 MIT License © 2014 James Abney http://github.com/jabney/swiftSet'; }
 
 // ---------------------------------------------------------------
-// Set and Histogram - the Histogram is the backing object for
-// Set, but it can also be used to record frequencies of discrete
-// values in arrays, strings, and objects; the Set object,
-// which is based upon Histogram, stores unique items and can
-// process even large arrays of items very fast.
-// ---------------------------------------------------------------
-// http://github.com/jabney/swiftSet
+// swiftSet.js - Store unique items and perform fast set operations.
+// (intersection)
 // ---------------------------------------------------------------
 var
 
@@ -144,6 +139,11 @@ function Set(a, hashFn) {
     return new Set(this.items(), hashFn);
   };
 
+  // Make this set mutable.
+  this.mutable = function() {
+    mutable = true;
+    return this;
+  };
 }
 
 // Helpers
