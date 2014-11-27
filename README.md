@@ -552,7 +552,7 @@ As the name implies, `swiftSet.js` is _swift_. Operations are fast even for larg
 ```javascript
 // Conceptualy, two histograms are created for each set during an operation.
 // Then they are normalized and merged.
-//
+
 var
 // Import.
 Set = swiftSet.Set,
@@ -598,6 +598,18 @@ When the histograms are additively merged, a picture of the two sets' properties
 ```
 
 This information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently than the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
+Here's a snipet from `swiftSet.js` that shows the `difference` operation calling into the `process` method, which iterates over the merged histogram and calls back to the given evaluator to determine if an item passed the test.
+
+```javascript
+// The difference method's evaluator gets called by the above code.
+difference: function(b) {
+  // Call the process method and supply the evaluator callback.
+  return this.process(b, function(freq) {
+    // Pass/fail condition.
+    return freq < 3;
+  });
+},
+```
 
 When performing a `union` all frequencies are valid, so all the items are returned in the output.
 
@@ -651,6 +663,7 @@ a.equals(b); // => true
 //   |     1    |    2    |    3    |
 //
 ```
+
 Comparing the above with the previous merged histogram example, you can see that the former has a `min` frequency of `1` and a `max` frequency of `3`, hence the sets are not equal. In the latter example, where both sets contain the same items, the histogram is flat. The `min` and `max` frequencies are both `3`.
 
 ### Extend `Set` With Custom Operations
