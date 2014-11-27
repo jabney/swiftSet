@@ -550,8 +550,8 @@ Set.complement([1, 2, 3], [2, 3, 4]); // => [1]
 As the name implies, `swiftSet.js` is _swift_. Operations are fast even for large arrays. `Set` operations makes use of a discrete-value histogram which is used to get a complete picture of one set's relation to the other. 
 
 ```javascript
-// Conceptualy, two histograms are created for each set during an operation. Then they
-// are normalized and merged.
+// Conceptualy, two histograms are created for each set during an operation.
+// Then they are normalized and merged.
 //
 var
 // Import.
