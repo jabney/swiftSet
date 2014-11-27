@@ -1,7 +1,7 @@
 swiftSet.js
 ===========
 
-`swiftSet.js` provides a javascript `Set` data type for storing unique values and performing basic set operations _swiftly_. It also includes a discrete-value `Histogram` class which is used as a backing object for `Set`, although it can also be used on its own. `swiftSet.js` can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
+`swiftSet.js` provides a javascript `Set` data type for storing unique values and performing basic set operations _swiftly_. `Set` can handle numeric values, strings, and objects if they're properly configured. Virtually any type of object can be part of a `Set`. 
 
 Contents
 + [Set](#set)
@@ -17,7 +17,7 @@ Contents
       + [Specify A Custom `tostring` Method For The Wrapper](#specify-a-custom-tostring-method-for-the-wrapper)
     + [Static Set Operations](#static-set-operations)
       + [Setting A Global Uid Method For Static Set Operations](#setting-a-global-uid-method-for-static-set-operations)
-  + [How `Set` uses `Histogram` For Fast Operations](#how-set-uses-histogram-for-fast-operations)
+  + [How `Set` Uses A Histogram For Fast Operations](#how-set-uses-a-histogram-for-fast-operations)
   + [Extend Set With Custom Operations](#extend-set-with-custom-operations)
 
 ## Set
@@ -546,42 +546,11 @@ Set.complement([1, 2, 3], [2, 3, 4]); // => [1]
 ```
 **Note:** While every call to `Set.pushUid` should be accompanied with a compelementary call to `Set.popUid` as a matter of practice, it's not possible to break things by calling `Set.popUid` too many times. The default `uid` method is preserved on the stack regardless of how many times `Set.popUid` is called.
 
-### How `Set` uses `Histogram` For Fast Operations
-As the name implies, `swiftSet.js` is _swift_. Operations are fast even for large arrays. `Set` operations make use of two discrete-value histograms which are merged together to get a complete picture of one set's relation to the other. 
-
-Here's what a histogram constructed from an array of values looks like conceptually:
+### How `Set` Uses a Histogram For Fast Operations
+As the name implies, `swiftSet.js` is _swift_. Operations are fast even for large arrays. `Set` operations makes use of a discrete-value histogram which is used to get a complete picture of one set's relation to the other. 
 
 ```javascript
-var
-// Import.
-Set = swiftSet.Set,
-
-// Create a set.
-set = new Set([1, 1, 2, 2, 2, 3]); // (1, 2, 3)
-
-// Internally the set's histogram looks something like this:
-// 
-//   |
-// 3 |     ***
-// 2 | *** ***
-// 1 | *** *** ***
-// --------------------
-//   |  1 | 2 | 3 |
-// 
-// The `x` axis represents the items in the set, and the `y` axis represents
-// the frequency of that item's occurrence in the original array. Value 1 has
-// two entries, value 2 has three, and 3 has one entry. This reflects the
-// composition of the original array [1, 1, 2, 2, 2, 3] although the order
-// of items is undefined. The internal histogram contains enough information
-// to rebuild the original array except for the order of its items.
-```
-
-There's no interface in `Set` that exposes the structure of the histogram. If you wish to make use of this type of data, construct a `Histogram` object, which is available with `swiftSet`. See the [Histogram](#histogram) class documentation below.
-
-Set operations build two histograms, one for each set of items, after which both histograms are _normalized_ and _merged_. The first set `a` gets its histogram normalized to `1` and the second set `b` gets its values normalized to `2`. This destroys the information about the composition of the original arrays but it creates a new layer of information about the members of each set, their similarities, and their differences, such that although the arrays' original composition information is lost, both sets `a` and `b` could be individually reconstructed from the data in the merged histogram.
-
-```javascript
-// Two histograms are created for each set during an operation. Then they
+// Conceptualy, two histograms are created for each set during an operation. Then they
 // are normalized and merged.
 //
 var
@@ -598,18 +567,7 @@ a.intersection(b); // => [2, 3]
 a.difference(b); // => [1, 4]
 a.complement(b); // => [1]
 
-// Histograms before normalization.
-//
-//          a                      b
-//   |                      |
-// 3 |     ***            3 |         ***
-// 2 | *** ***            2 | ***     ***
-// 1 | *** *** ***        1 | *** *** ***
-// -----------------      -----------------
-// a |  1 | 2 | 3 |       b |  2 | 3 | 4 |
-// 
-//
-// Histograms after normalization (`a` is normalized to `1` and `b` to `2`).
+// A histogram represents each set in an operation.
 //
 //          a                      b
 //   |                      |
@@ -641,34 +599,6 @@ When the histograms are additively merged, a picture of the two sets' properties
 
 This information is sufficient to perform all five included set operations, although the `equals` operation is calculated differently than the other four. `Set` operations abstract the concept of an _evaluator_, which is called as the process iterates over the items in the histogram and builds the output based on whether the evaluator returns true or false. 
 
-Here's a snipet from `swiftSet.js` that shows the `difference` operation calling into the `process` method, which iterates over the merged histogram and calls back to the given evaluator to determine if an item passed the test.
-
-```javascript
-// The inner loop of Set's process method calls the evaluator.
-
-// Merge histogram b into a.
-a.merge(b);
-if(evaluator) {
-  // Iterate a and build the output array.
-  a.each(function(item, freq) {
-    // The item gets added to the output if the evaluator passes.
-    evaluator(freq) && out.push(item); 
-  });
-  return out;
-} else {
-
-// ...
-
-// The difference method's evaluator gets called by the above code.
-difference: function(b) {
-  // Call the process method and supply the evaluator callback.
-  return this.process(b, function(freq) {
-    // Pass/fail condition.
-    return freq < 3;
-  });
-},
-```
-
 When performing a `union` all frequencies are valid, so all the items are returned in the output.
 
 `return true` `=>` `[1, 2, 3, 4]`
@@ -699,7 +629,7 @@ b = new Set([1, 2, 2, 2, 3, 3]), // (1, 2, 3)
 // Perform equals operation.
 a.equals(b); // => true
 
-// Histograms after normalization but before merge.
+// Histograms before merge.
 //
 //          a                      b
 //   |                      |
