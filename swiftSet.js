@@ -5,67 +5,11 @@ function version() { return 'swiftSet v0.10.1 MIT License © 2014 James Abney ht
 
 // ---------------------------------------------------------------
 // swiftSet.js - Store unique items and perform fast set operations.
-// (intersection)
+// (union, intersection, difference, complement)
+// 
+// http://github.com/jabney/swiftSet
 // ---------------------------------------------------------------
-var
-
-// Shortcuts
-slice = Array.prototype.slice,
-
-// Return the type of built-in objects via toString.
-typeOf = (function() {
-  var reType = /\[object (\w+)\]/; 
-  return function(obj) {
-    return reType.exec(toString.call(obj))[1];
-  };
-})(),
-
-// Encode object type for key generation.
-encodeObjType = (function() {
-
-  var toString = Object.prototype.toString,
-
-  // A list of built-in types.
-  types = ['Null','Undefined','Array','Boolean','Number','String','Object',
-    'Function','Date','Error','RegExp','Arguments','Math','JSON'],
-
-  // Build dictionary for converting type strings to unique codes.
-  codes = Object.create(null);
-  types.forEach(function(type, index) {
-    codes[type] = index;
-  });
-
-  // Encode an object's type as a unique number. If the type code
-  // is not defined, return the type name.
-  return function encodeObjType(obj) {
-    var type = typeOf(obj),
-    code = codes[type];
-    return code === undefined ? type : code;
-  }
-
-})();
-
-// Wrap a built-in type and give it a unique key generator.
-function Wrapper(obj, toStr) {
-  this.item = obj;
-  this.toString = toStr ? toStr : function() {
-    return '(' + obj + ':' + encodeObjType(obj) + ')';
-  };
-}
-
-// Wrap an object so that it kas a key according to its type and value.
-// Use: var wrap = wrapObj(); wrap(1); => {item: 1, toString: function(){...}}
-function wrapObj(toStr) {
-  return function(obj) {
-    return new Wrapper(obj, toStr);
-  }
-}
-
-// Returns true if obj is an instance of Wrapper, false otherwise.
-function isWrapped(obj) {
-  return obj instanceof Wrapper;
-}
-
+//
 // ---------------------------------------------------------------
 // Set - produces a set of unique items that can be queried for its
 // properties. It supports five common set operations (union,
@@ -323,16 +267,16 @@ Set.prototype = {
 // perfromed on two given arrays. They are class methods,
 // can be called directly and do not requre a Set object to be 
 // specifically constructed, and are generally faster than their
-// Set.prototye equivalents (except perhaps for very large arrays).
+// Set.prototye equivalents.
 //
 // Example usage: Set.intersection([1, 2, 3], [2, 3, 4]) => [2, 3]
 //
 // Arrays of objects can be used as well, but each object must
 // have a toString() method which returns a unique value, or the
 // objects must be wrapped. 
-//
-// This also shows the core set operations algorithm without any of
-// the overhead associated with constructing and managing a Set.
+// 
+// See the documentation for more information.
+// http://github.com/jabney/swiftSet
 // ---------------------------------------------------------------
 (function() {
   var uidList = [], uid;
@@ -440,8 +384,65 @@ Set.prototype = {
   };
 })();
 
+var
+// Shortcuts
+slice = Array.prototype.slice,
+
+// Return the type of built-in objects via toString.
+typeOf = (function() {
+  var reType = /\[object (\w+)\]/; 
+  return function(obj) {
+    return reType.exec(toString.call(obj))[1];
+  };
+})(),
+
+// Encode object type for key generation.
+encodeObjType = (function() {
+
+  var toString = Object.prototype.toString,
+
+  // A list of built-in types.
+  types = ['Null','Undefined','Array','Boolean','Number','String','Object',
+    'Function','Date','Error','RegExp','Arguments','Math','JSON'],
+
+  // Build dictionary for converting type strings to unique codes.
+  codes = Object.create(null);
+  types.forEach(function(type, index) {
+    codes[type] = index;
+  });
+
+  // Encode an object's type as a unique number. If the type code
+  // is not defined, return the type name.
+  return function encodeObjType(obj) {
+    var type = typeOf(obj),
+    code = codes[type];
+    return code === undefined ? type : code;
+  }
+
+})();
+
+// Wrap a built-in type and give it a unique key generator.
+function Wrapper(obj, toStr) {
+  this.item = obj;
+  this.toString = toStr ? toStr : function() {
+    return '(' + obj + ':' + encodeObjType(obj) + ')';
+  };
+}
+
+// Wrap an object so that it kas a key according to its type and value.
+// Use: var wrap = wrapObj(); wrap(1); => {item: 1, toString: function(){...}}
+function wrapObj(toStr) {
+  return function(obj) {
+    return new Wrapper(obj, toStr);
+  }
+}
+
+// Returns true if obj is an instance of Wrapper, false otherwise.
+function isWrapped(obj) {
+  return obj instanceof Wrapper;
+}
+
 // Export
 swiftSet.Set = Set;
-
 })(window.swiftSet = window.swiftSet || {});
 
