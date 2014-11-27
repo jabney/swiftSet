@@ -211,6 +211,43 @@ describe('Set', function() {
       expect(s2.has(o4)).toEqual(true);
       expect(s2.has(o5)).toEqual(true);
     });
+
+    it('can be internally mutable with respect to set operations', function() {
+      var a = new Set([1, 2, 3, 4, 5]).mutable();
+      expect(a.size()).toEqual(5);
+
+      a.intersection([2, 3, 4]); // (2, 3, 4)
+      expect(a.size()).toEqual(3);
+      expect(a.has(1)).toEqual(false);
+      expect(a.has(2)).toEqual(true);
+      expect(a.has(3)).toEqual(true);
+      expect(a.has(4)).toEqual(true);
+      expect(a.has(5)).toEqual(false);
+
+      a.union([1, 5]);  // (1, 2, 3, 4, 5)
+      expect(a.size()).toEqual(5);
+      expect(a.has(1)).toEqual(true);
+      expect(a.has(2)).toEqual(true);
+      expect(a.has(3)).toEqual(true);
+      expect(a.has(4)).toEqual(true);
+      expect(a.has(5)).toEqual(true);
+
+      a.difference([2, 3]); // (1, 4, 5)
+      expect(a.size()).toEqual(3);
+      expect(a.has(1)).toEqual(true);
+      expect(a.has(2)).toEqual(false);
+      expect(a.has(3)).toEqual(false);
+      expect(a.has(4)).toEqual(true);
+      expect(a.has(5)).toEqual(true);
+
+      a.complement([1, 4]); // (5)
+      expect(a.size()).toEqual(1);
+      expect(a.has(1)).toEqual(false);
+      expect(a.has(2)).toEqual(false);
+      expect(a.has(3)).toEqual(false);
+      expect(a.has(4)).toEqual(false);
+      expect(a.has(5)).toEqual(true);
+    });
   });
 
   describe('object key', function() {

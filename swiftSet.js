@@ -92,7 +92,6 @@ function Set(a, hashFn) {
   };
 
   // Make this set mutable.
-  // TODO: unit test.
   this.mutable = function() {
     mutable = true;
     return this;
