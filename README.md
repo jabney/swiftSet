@@ -692,12 +692,13 @@ a.rcomplement(b); // => [4]
 Set.prototype.reconstruct = function(b) {
   // When the process method is called without an evaluator,
   // it returns the merged histogram.
-  var hist = this.process(b), out = {a:[], b:[]};
-  hist.each(function(item, freq, key) {
-    freq === 3 && out.a.push(item) && out.b.push(item); // Members of both sets.
-    freq === 1 && out.a.push(item); // Members of set a.
-    freq === 2 && out.b.push(item); // Members of set b.
-  });
+  var hist = this.process(b), out = {a:[], b:[]}, k, item;
+  for (k in hist) {
+    item = hist[k];
+    item.freq === 3 && out.a.push(item.item) && out.b.push(item.item); // Members of both sets.
+    item.freq === 1 && out.a.push(item.item); // Members of set a.
+    item.freq === 2 && out.b.push(item.item); // Members of set b.
+  }
   return out;
 };
 
@@ -705,13 +706,4 @@ Set.prototype.reconstruct = function(b) {
 // both sets can be reconstructed from the merged histogram.
 a.reconstruct(b); // => {a:[1, 2, 3], b:[2, 3, 4]}
 ```
-## Histogram
-
-<!---
-### About Keys
-```javascript
-
-```
--->
-
 
