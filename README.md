@@ -7,9 +7,9 @@ Contents
 + [Set](#set)
   + [Usage](#usage)
     + [Set Operations](#set-operations)
+      + [Set Mutability](#set-mutability)
     + [Sets of Objects](#sets-of-objects)
       + [The `toString` Method](#the-tostring-method)
-      + [The Object `hkey` Method](#the-object-hkey-method)
       + [The Global Key Method](#the-global-key-method)
       + [The Wrapper Method](#the-wrapper-method)
     + [Mixed Values](#mixed-values)
@@ -19,7 +19,6 @@ Contents
       + [Setting A Global Uid Method For Static Set Operations](#setting-a-global-uid-method-for-static-set-operations)
   + [How `Set` uses `Histogram` For Fast Operations](#how-set-uses-histogram-for-fast-operations)
   + [Extend Set With Custom Operations](#extend-set-with-custom-operations)
-+ [Histogram](#histogram)
 
 ## Set
 This section describes how to get started using `Set` then describes its methods as well as how to work with objects and mixed values.
@@ -103,10 +102,6 @@ a.clear(b.items()); // => (3, 4, 5)
 
 // Clear a set.
 a.clear();  // => ()
-
-// If a string is passed to the constructor, it is 
-// automatically converted to a character array.
-a = new Set('abcacbbacbcacabcba').items().sort() // => ['a', 'b', 'c']
 ```
 
 #### Set Operations
@@ -142,7 +137,34 @@ a.equals([1, 2, 2, 3, 3]); // => true
 a.equals(b); // => false
 ```
 
-**Note:** Set operations do not modify the set they're called on. Rather the output of a set operation is a new array containing the results of the operation. If you need the set to take on the values of an operation, call the `clear` method and pass in the results of an operation: `a.clear(a.intersection(b))`. To create a new set from an operation, use either `var c = new Set(a.intersection(b))` or `var c = a.copy(a.intersection(b))`. Using `clear` or `copy` retains the [Global Key](#the-global-key-method) value if one was passed to the constructor.
+##### Set Mutability
+
+By default, set operations do not modify the set they're called on. Rather the output of a set operation is a new array containing the result of the operation.
+
+```javascript
+var set = new Set([1, 2, 3]); // (1, 2, 3)
+
+// Return the intersection as an array.
+set.intersection([2, 3]); // => [2, 3]
+
+// The set still has the same original items.
+set.items(); // => [1, 2, 3]
+```
+
+However by setting the set's `mutable` flag, the result of an operation becomes the new value of the set.
+
+```javascript
+// Create a set and make it mutable.
+var set = new Set([1, 2, 3]).mutable(); // (1, 2, 3)
+
+// Perform an operation.
+set.union([4, 5]); // => [1, 2, 3, 4, 5]
+
+// The set now contains the result instead of the original items.
+set.items(); // => [1, 2, 3, 4, 5]
+```
+
+**Note:** The call to `mutable()` is a one-way operation. Once a set is mutable, it remains mutable throughout its lifetime.
 
 #### Sets of Objects
 Objects can also be used in sets, but it requires an extra step &mdash; one of several options to return a unique key from an object. Every option requires that an object has some property to establish its uniqueness in order to differentiate it from other objects. This is often some sort if unique value or identifier, and it acts as a key for when the item is added to `Set`'s internal histogram (at its core an object literal).
@@ -198,55 +220,8 @@ set.has(o1); // => true
 set.items() // => [1], this could also be ["1"] or [o1].
 ```
 
-##### The Object `hkey` Method
-This method requires that objects in the set each have a `hkey` property, and that the property is either a value or a function. This method is particularly useful when overriding an object's `toString` method is not an option, or when a set needs to contain [Mixed Values](#mixed-values) consisting of objects and numeric values and/or numeric strings.
-
-```javascript
-var
-// Import.
-Set = swiftSet.Set,
-
-// Create objects with a value key.
-o1 = {hkey: 1},
-o2 = {hkey: 2},
-o3 = {hkey: 3},
-o4 = {hkey: 4},
-
-// Create two sets.
-a = new Set([o1, o1, o2, o3]),
-b = new Set([o2, o3, o4]);
-
-// They should both have three items.
-a.size(); // => 3
-b.size(); // => 3
-
-// Perform an operation.
-a.intersection(b); // => [o2, o3]
-
-// Create a function to be used as a key retriever.
-function key() {
-  return this.id;  
-}
-
-o1 = {id: 1, hkey: key},
-o2 = {id: 2, hkey: key},
-o3 = {id: 3, hkey: key},
-o4 = {id: 4, hkey: key},
-
-// Create two sets.
-a = new Set([o1, o2, o3]),
-b = new Set([o2, o3, o4]);
-
-// They should both have three items.
-a.size(); // => 3
-b.size(); // => 3
-
-// Perform an operation.
-a.difference(b); // => [o1, o4]
-```
-
 ##### The Global Key Method
-This method requires that a `key` property or function is specified in `Set`'s constructor. The effective difference between this method and the [Object `hkey` Method](#the-object-hkey-method) is that when a global key is specified, it's expected that every item in the set will be an object with that property; whereas objects making use of the [Object `hkey` Method](#the-object-hkey-method) can be mixed with other values in the set. See [Mixed Values](#mixed-values) for more information.
+This method requires that a `hashFn` function is specified in `Set`'s constructor. Pass a function to the constructor that retrieves an object's unique key or identifier.
 
 ```javascript
 var
@@ -258,17 +233,6 @@ o1 = {id: 1},
 o2 = {id: 2},
 o3 = {id: 3},
 o4 = {id: 4},
-
-// Create two sets and specify a value key.
-a = new Set([o1, o1, o2, o3], 'id'),
-b = new Set([o2, o3, o4], 'id');
-
-// They should both have three items.
-a.size(); // => 3
-b.size(); // => 3
-
-// Perform an operation.
-a.complement(b); // => [o1]
 
 // Create a function to be used as a key retriever.
 function getId() {
@@ -289,7 +253,7 @@ a.intersection(b); // => [o2, o3]
 
 ##### The Wrapper Method
 
-Another option for adding objects to sets is to wrap them using `Set.wrapObj()`. This method requires a bit of extra work, but it may be desirable in cases where you want to mix objects in a set with other types such as strings and/or numbers but you don't want to use the [Object `hkey` Method](#the-object-hkey-method). When objects are wrapped, they're given a wrapper object which has a `toString` method. The default `toString` method of the wrapper is suitable for `Number`s and `String`s, but it will likely not be readily suitable for some other types such as object literals. In these cases a custom toString method can be specified in the initial call to `wrapObj`. The wrapper will have a property called `item` which will contain the object that was wrapped.
+Another option for adding objects to sets is to wrap them using `Set.wrapObj()`. This method requires a bit of extra work, but it may be desirable in cases where you want to mix objects in a set with other types such as strings and/or numbers. When objects are wrapped, they're given a wrapper object which has a `toString` method. The default `toString` method of the wrapper is suitable for `Number`s and `String`s, but it will likely not be readily suitable for some other types such as object literals. In these cases a custom toString method can be specified in the initial call to `wrapObj`. The wrapper will have a property called `item` which will contain the object that was wrapped.
 
 ```javascript
 var
@@ -367,8 +331,9 @@ set.items(); // => [{item: 1, ...}, {item: '1', ...}, {item: 2, ...}, ...]
 set.unwrap(); // => [1, '1', 2, '2']
 
 // Objects can also be added, as long as one of the key methods is used.
-var o1 = {hkey: 'o1'},
-o2 = {hkey: 'o2' };
+var wrapObj = Set.wrapObj(function() { return this.item.id; });
+var o1 = wrapObj({id: 'o1'}),
+o2 = wrapObj({id: 'o2' });
 
 // Add objects to set (these are not wrapped).
 set.add(o1, o2);
@@ -376,7 +341,7 @@ set.add(o1, o2);
 // Manually unwrap items (or use unwrap as shown above.
 set.items().map(function(item) {
   return isWrapped(item) ? item.item : item;
-}); // => [1, '1', 2, '2', {key: 'o1'}, {key: 'o2'}]
+}); // => [1, '1', 2, '2', {id: 'o1'}, {id: 'o2'}]
 ```
 
 ##### How The Wrapper Works
