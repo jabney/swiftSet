@@ -518,7 +518,8 @@ Set.pushUid(function() { return this.id; });
 Set.union(a, b); // => [o1, o2, o3, o4]
 
 function doOtherStuff() {
-  var p1 = { _id: '1' },
+  var
+  p1 = { _id: '1' },
   p2 = { _id: '2' },
   p3 = { _id: '3' },
   p4 = { _id: '4' },
@@ -527,12 +528,10 @@ function doOtherStuff() {
   d = [p2, p3, p3, p4], intersection;
 
   Set.pushUid(function() { return this._id; });
-  intersection = Set.intersection(c, d); // => [o2, o3]
+  intersection = Set.intersection(c, d); // => [p2, p3]
   
   // Restore the previously pushed uid method.
   Set.popUid();
-
-  return intersection;
 }
 
 doOtherStuff();
