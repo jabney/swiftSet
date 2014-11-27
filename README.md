@@ -695,7 +695,8 @@ Set.prototype.reconstruct = function(b) {
   var hist = this.process(b), out = {a:[], b:[]}, k, item;
   for (k in hist) {
     item = hist[k];
-    item.freq === 3 && out.a.push(item.item) && out.b.push(item.item); // Members of both sets.
+    // Members of both sets.
+    item.freq === 3 && out.a.push(item.item) && out.b.push(item.item);
     item.freq === 1 && out.a.push(item.item); // Members of set a.
     item.freq === 2 && out.b.push(item.item); // Members of set b.
   }
