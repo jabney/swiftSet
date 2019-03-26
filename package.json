@@ -10,7 +10,10 @@
     "type": "git",
     "url": "git+https://github.com/jabney/swiftSet.git"
   },
-  "author": "Jean-Daniel Fekete <Jean-Daniel.Fekete@inria.fr> (http://www.aviz.fr/~fekete)",
+  "author": "James Abney",
+  "collaborators": [
+    "Jean-Daniel Fekete <Jean-Daniel.Fekete@inria.fr"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jabney/swiftSet/issues"
